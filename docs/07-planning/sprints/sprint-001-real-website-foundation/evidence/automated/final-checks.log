@@ -1,0 +1,23 @@
+^D$ tsc --noEmit --pretty false -p tsconfig.app.json && tsc --noEmit --pretty false -p tsconfig.node.json
+$ eslint .
+$ vitest run
+[?25l
+ RUN  v4.1.10 /Users/paboelustodo/-PROJECTS/elustondoaiweb
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  22:35:47
+   Duration  529ms (transform 17ms, setup 40ms, import 105ms, tests 129ms, environment 199ms)
+
+[?25h$ pnpm run typecheck && vite build
+$ tsc --noEmit --pretty false -p tsconfig.app.json && tsc --noEmit --pretty false -p tsconfig.node.json
+vite v8.2.0 building client environment for production...
+[2K✓ 16 modules transformed.
+[2Krendering chunks (1)...[2Kcomputing gzip size...
+[2Kdist/index.html                   0.62 kB │ gzip:  0.37 kB
+dist/assets/index-BBVu6EtS.css    4.83 kB │ gzip:  1.81 kB
+dist/assets/index-BIUmIZhi.js   196.82 kB │ gzip: 61.99 kB
+
+✓ built in 55ms
