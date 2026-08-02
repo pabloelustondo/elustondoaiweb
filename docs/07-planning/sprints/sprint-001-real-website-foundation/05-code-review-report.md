@@ -1,16 +1,18 @@
 # Sprint 001 — Code Review Report
 
-**Status:** `COMPLETE — CHANGES REQUIRED`
+**Status:** `COMPLETE — FRESH REVIEW RERUN PASSED`
 **Required role:** Fresh independent read-only reviewer
-**Review date:** 2026-08-02 (America/Toronto)
+**First review date:** 2026-08-02 (America/Toronto)
+**Fresh review rerun date:** 2026-08-02 (America/Toronto)
 **Repository:** `/Users/paboelustodo/-PROJECTS/elustondoaiweb`
 **Branch:** `sprint-001-real-website-foundation`
-**Review commit:** `c4ebef97176a7da837702d40166e4530c7c0c414`
+**First review commit:** `c4ebef97176a7da837702d40166e4530c7c0c414`
+**Fresh review commit:** `9613454bd9b0c42c2ced50eb56f8c04eeca69159`
 **Comparison baseline:** `main` at `5b527e3f200190a2790385a2a7c85aadd06b9f73`
 **Worktree at review:** clean
-**Recommendation:** `CHANGES REQUIRED`
+**Final recommendation:** `APPROVED FOR INTEGRATION WITH MINOR FINDINGS`
 
-This is an independent structural review. It does not approve the sprint, resolve GitHub comments, merge the pull request, deploy the site, or authorize Firebase, credentials, billing, or DNS work.
+This report preserves the first independent review, which required documentation-only corrections, and records the fresh independent rerun after Correction 03. It does not approve the sprint, resolve GitHub comments, merge the pull request, deploy the site, or authorize Firebase, credentials, billing, or DNS work.
 
 ## 1. Scope identity
 
@@ -124,8 +126,43 @@ These are first-class governance and evidence records under this project's SDLC�
 - Assistant, generated-page, backend, safety-pipeline, provider, Firebase, authentication, and deployment capabilities are explicitly deferred.
 - Full WCAG conformance, production email delivery, Firebase preview behavior, public hosting, and DNS behavior are not established by this local foundation and are not claimed.
 
-## 11. Recommendation
+## 11. Preserved first-review outcome
 
 `CHANGES REQUIRED`
 
 The application implementation and independent integration results are structurally acceptable. The required correction is narrow and documentation-only: reconcile the canonical workflow summaries and evidence index without changing application code, dependencies, tests, or preserved historical evidence. After that correction is committed and its documentation consistency is checked, a fresh independent code review should issue the final recommendation. The reviewer does not approve the sprint or merge the pull request.
+
+## 12. Fresh independent review rerun after Correction 03
+
+### Review identity and bounded diff
+
+- Repository and branch: `/Users/paboelustodo/-PROJECTS/elustondoaiweb`, `sprint-001-real-website-foundation`.
+- Exact reviewed commit: `9613454bd9b0c42c2ced50eb56f8c04eeca69159`.
+- Correction comparison: `c4ebef97176a7da837702d40166e4530c7c0c414..9613454bd9b0c42c2ced50eb56f8c04eeca69159`.
+- Worktree was clean before this report update, and `git diff --check` passed for Correction 03.
+- Correction 03 changed only planning, sprint-governance, code-review, correction-response, and evidence-index Markdown files. No application source, public asset, dependency declaration, lockfile, test, build configuration, detailed browser evidence, independent integration evidence, or integration report changed after the first review.
+
+### CR-001 verification — resolved
+
+The current state is consistently `AWAITING_CODE_REVIEW` in the Sprint package manifest, Sprint registry, and roadmap. The package manifest now states that Corrections 01 and 02 passed independent integration testing, that the first review required documentation reconciliation, and that Correction 03 awaits this fresh review. Historical `AWAITING_INTEGRATION_TEST` values remain only where they identify the contemporaneous final state of the Correction 01 and Correction 02 implementation-agent responses; they are not presented as the current Sprint state.
+
+### CR-002 verification — resolved
+
+The evidence index now accurately distinguishes all relevant stages:
+
+- the original implementation-agent session used the wrong width comparison and failed to recognize the 320-pixel overflow;
+- the first independent integration run measured document client width 305 and scroll width 320 and correctly failed the build;
+- Correction 01 removed the overflow and passed a fresh independent rerun at 305/305;
+- Correction 02 passed its fresh independent dependency, documentation, and regression rerun.
+
+The index links the corrected historical session record and both independent correction retest records. The original failure report, detailed browser evidence, correction evidence, and passing integration reports remain preserved and unchanged by Correction 03.
+
+### Remaining findings
+
+No blocking finding remains. CR-001 and CR-002 are closed by Correction 03. CR-003 remains a non-blocking operational finding: GitHub does not yet enforce the verified checks in CI. It should be routed to a later explicitly authorized infrastructure or release-hardening sprint and does not prevent Sprint 001 human disposition.
+
+## 13. Final recommendation
+
+`APPROVED FOR INTEGRATION WITH MINOR FINDINGS`
+
+Sprint 001 is structurally suitable to advance to Pablo's human approval and disposition gate. This recommendation does not itself approve the Sprint, accept the remaining operational finding, authorize merge, resolve GitHub comments, or authorize deployment, Firebase, credentials, billing, or DNS actions.

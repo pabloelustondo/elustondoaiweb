@@ -6,7 +6,7 @@ This directory contains the canonical package for every implementation sprint. A
 
 | Sprint | State | Goal | Package |
 |---|---|---|---|
-| 001 — Real Website Foundation | `AWAITING_CODE_REVIEW` | Build the first real static website foundation and homepage | [Open package](sprint-001-real-website-foundation/README.md) |
+| 001 — Real Website Foundation | `APPROVED` | Build the first real static website foundation and homepage | [Open package](sprint-001-real-website-foundation/README.md) |
 
 ## State ownership
 

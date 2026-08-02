@@ -1,6 +1,6 @@
 # Sprint 001 — Real Website Foundation
 
-**Workflow state:** `AWAITING_CODE_REVIEW`
+**Workflow state:** `APPROVED`
 **Product goal:** Create the first real, maintainable Elustondo.ai website foundation and homepage.
 **Authorized component boundary:** Proposed `StableShell` and repository build/test foundation
 **Repository:** `/Users/paboelustodo/-PROJECTS/elustondoaiweb`
@@ -13,7 +13,7 @@
 
 ## Authorization status
 
-Pablo explicitly approved the Sprint Plan, original implementation prompt, and Corrections 01 through 03. Corrections 01 and 02 passed fresh independent integration-test reruns. The first independent code review found only conflicting workflow/evidence summaries; Correction 03 reconciles those documentation records and now awaits fresh independent code review.
+Pablo explicitly approved the Sprint Plan, original implementation prompt, and Corrections 01 through 03. Corrections 01 and 02 passed fresh independent integration-test reruns. Correction 03 resolved the first code review's documentation findings, and the fresh independent review issued `APPROVED FOR INTEGRATION WITH MINOR FINDINGS`. Pablo completed Manual QA and approved Sprint 001 with explicit deferrals.
 
 ## Mandatory documents
 
@@ -21,8 +21,8 @@ Pablo explicitly approved the Sprint Plan, original implementation prompt, and C
 2. [Implementation Prompt](02-authorized-implementation-prompt.md) — authorized work order; immutable after dispatch
 3. [Agent Delivered-Scope Report](03-agent-delivered-scope-report.md) — original implementation claim complete
 4. [Developer Integration Test Report](04-developer-integration-test-report.md) — historical first run failed; Correction 01 and Correction 02 fresh reruns passed
-5. [Code Review Report](05-code-review-report.md) — first review required documentation reconciliation; fresh review pending after Correction 03
-6. [Sprint Approval and Disposition](06-sprint-approval-and-disposition.md) — pending all prior gates
+5. [Code Review Report](05-code-review-report.md) — final recommendation `APPROVED FOR INTEGRATION WITH MINOR FINDINGS`
+6. [Sprint Approval and Disposition](06-sprint-approval-and-disposition.md) — `APPROVED WITH EXPLICIT DEFERRALS`
 
 ## Evidence
 
@@ -41,7 +41,7 @@ Implementation, Correction 01, Correction 02, and independent integration eviden
 
 ## Final disposition
 
-Pending.
+`APPROVED WITH EXPLICIT DEFERRALS`. Pull request #1 merge was separately authorized after approval.
 
 ## Proposed postponed work
 

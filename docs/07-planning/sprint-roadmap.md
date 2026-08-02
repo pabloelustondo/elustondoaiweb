@@ -24,4 +24,4 @@
 
 ## Active package
 
-- [Sprint 001 — Real Website Foundation](sprints/sprint-001-real-website-foundation/README.md) — `AWAITING_CODE_REVIEW` after Corrections 01 and 02 passed independent integration testing; Correction 03 reconciles review-found documentation state before the fresh review.
+- [Sprint 001 — Real Website Foundation](sprints/sprint-001-real-website-foundation/README.md) — `APPROVED` with explicit deferrals after passing integration testing, final independent code review, and Pablo Manual QA.
