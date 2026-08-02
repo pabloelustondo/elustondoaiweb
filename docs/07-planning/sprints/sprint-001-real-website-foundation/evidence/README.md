@@ -1,6 +1,6 @@
 # Sprint 001 Evidence Index
 
-**Status:** Sprint 001 implementation and Correction 01 evidence captured; awaiting fresh independent integration testing
+**Status:** Sprint 001 implementation and correction evidence complete; Correction 01 and Correction 02 independently passed integration testing; awaiting fresh independent code review
 
 **Evidence session:** 2026-08-01, local production build served at `http://127.0.0.1:4173/`, branch `main`, baseline and current HEAD `5b527e3f200190a2790385a2a7c85aadd06b9f73` with the uncommitted worktree described in the delivery report.
 
@@ -34,7 +34,7 @@ Screens from the same final build/session:
 - [`browser/mobile-320.jpg`](browser/mobile-320.jpg)
 - [`browser/mobile-320-menu-open.jpg`](browser/mobile-320-menu-open.jpg)
 
-Observed client widths and document scroll widths were 1440/1425, 1024/1009, 768/753, 390/375, and 320/320 respectively; the narrower document values reflect the browser scrollbar. No width produced horizontal overflow. At 320 pixels the menu control changed `aria-expanded` from `false` to `true`, focus moved to Home, Escape changed the state to `false`, and focus returned to the menu button. The page exposed one `h1` and one each of header, main, footer, and primary-navigation landmarks. The local SVG logo loaded with natural size 1100 × 220 and preserved aspect ratio.
+The original implementation-agent session correctly observed responsive behavior at 1440, 1024, 768, and 390 pixels but used browser `innerWidth` instead of document `clientWidth` when interpreting the 320-pixel result. The first independent integration run measured client width 305 and scroll width 320, proving a visible 15-pixel overflow. Correction 01 removed that overflow; its independent rerun measured client width and scroll width both 305 at a 320-pixel browser viewport. The original mistake remains transparently recorded in [`browser/session-observations.md`](browser/session-observations.md). Mobile-menu focus and Escape behavior, landmark structure, and canonical logo dimensions otherwise passed in the original session.
 
 The automated `vitest-axe` scan found zero violations in the rendered homepage state. A keyboard walkthrough confirmed the skip link, primary navigation, hero actions, email links, visible focus styling, and Escape behavior. These are implementation observations, not independent WCAG certification.
 
@@ -70,7 +70,7 @@ The first independent integration test recorded two defects: horizontal overflow
 - [`browser-observations.md`](corrections/correction-01/browser-observations.md) — responsive measurements, focus result, claim boundaries, and browser-console result.
 - [`mobile-320-corrected.png`](corrections/correction-01/mobile-320-corrected.png) — corrected 320-pixel implementation-agent screenshot.
 
-This correction evidence is an implementation claim. A fresh independent task must reproduce it before the sprint advances to code review.
+The fresh independent Correction 01 rerun passed. See [`integration/correction-01-retest-observations.md`](integration/correction-01-retest-observations.md).
 
 ## Correction 02 evidence
 
@@ -78,7 +78,7 @@ Correction 02 addresses four minor GitHub PR review findings concerning Node com
 
 - [`corrections/correction-02/automated-checks.log`](corrections/correction-02/automated-checks.log) — dependency classification, lockfile, frozen installation, type-check, lint, five tests, build, and whitespace results.
 
-This is implementation-agent evidence. A fresh independent task must reproduce the correction checks before formal code review resumes.
+The fresh independent Correction 02 rerun passed. See [`integration/correction-02-retest-observations.md`](integration/correction-02-retest-observations.md).
 
 ## Storage rules
 
