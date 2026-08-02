@@ -72,6 +72,14 @@ The first independent integration test recorded two defects: horizontal overflow
 
 This correction evidence is an implementation claim. A fresh independent task must reproduce it before the sprint advances to code review.
 
+## Correction 02 evidence
+
+Correction 02 addresses four minor GitHub PR review findings concerning Node compatibility, deterministic dependency declarations, StableShell documentation state, and the interpretation of historical overflow evidence.
+
+- [`corrections/correction-02/automated-checks.log`](corrections/correction-02/automated-checks.log) — dependency classification, lockfile, frozen installation, type-check, lint, five tests, build, and whitespace results.
+
+This is implementation-agent evidence. A fresh independent task must reproduce the correction checks before formal code review resumes.
+
 ## Storage rules
 
 Use concise text summaries and intentionally selected screenshots. Do not commit dependency directories, caches, secrets, private data, raw uncontrolled build output, or large ephemeral artifacts. Large artifacts may remain external when their stable reference and retention are recorded here.

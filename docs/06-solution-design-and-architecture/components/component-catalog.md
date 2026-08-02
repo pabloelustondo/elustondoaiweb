@@ -5,7 +5,7 @@
 
 | Component | Responsibility | Current state | First planned sprint |
 |---|---|---|---|
-| `StableShell` | Own permanent identity, semantic page structure, navigation, responsive layout, static content presentation, and graceful operation without AI. | Design and mockup only | Sprint 001 |
+| `StableShell` | Own permanent identity, semantic page structure, navigation, responsive layout, static content presentation, and graceful operation without AI. | Sprint 001 foundation implemented and independently integration-tested; awaiting code review and merge | Sprint 001 |
 | Static Content Model | Own reviewed local article, project, method, person, company, and site-metadata records. | Planned | Sprint 002 |
 | `AssistantPanel` | Own visitor question entry, suggestions, status, clarification, and request cancellation. | Designed; not implemented | Sprint 003 |
 | `SiteNavigator` | Convert an approved route identifier into shell-owned navigation. Never execute arbitrary URLs. | Designed; not implemented | Sprint 003 |

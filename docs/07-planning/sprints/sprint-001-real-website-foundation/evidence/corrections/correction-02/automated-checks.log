@@ -1,0 +1,39 @@
+Sprint 001 Correction 02 — implementation verification
+Executed: 2026-08-02 America/Toronto
+Branch: sprint-001-real-website-foundation
+Baseline commit: 9a4f0929a55289e1751893665f5cef0d72be1878
+Worktree: uncommitted Correction 02
+
+Package manifest
+PASS — no latest declarations remain
+PASS — React and React DOM are the only runtime dependencies
+PASS — build, type, lint, test, and DOM tooling are development dependencies
+PASS — Node engine is ^20.19.0 || ^22.13.0 || >=24.0.0
+PASS — package manager is pnpm 11.9.0
+
+pnpm install
+PASS — lockfile regenerated; jsdom 29.0.1 replaced jsdom 30.0.1
+
+pnpm install --frozen-lockfile
+PASS — already up to date
+
+pnpm run typecheck
+PASS — no diagnostics
+
+pnpm run lint
+PASS — no findings
+
+pnpm test
+PASS — 1 file, 5 tests
+NOTE — existing non-failing JSDOM HTMLCanvasElement getContext notice remains unchanged
+
+pnpm run build
+PASS — Vite 8.2.0; 16 modules transformed
+dist/index.html: 0.62 kB
+dist/assets/index-nhX2EoBg.css: 4.85 kB
+dist/assets/index-B6zgMuPA.js: 196.97 kB
+
+git diff --check
+PASS — no whitespace errors
+
+No independent integration-test, formal code-review, merge, deployment, or release claim is made.

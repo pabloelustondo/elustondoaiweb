@@ -1,7 +1,7 @@
 # StableShell Responsibility Card
 
-**Status:** Architectural input for Sprint 001 planning
-**Implementation state:** Not yet implemented
+**Status:** Implemented architectural baseline
+**Implementation state:** Sprint 001 foundation implemented and independently integration-tested; awaiting code review and merge
 
 ## Purpose
 

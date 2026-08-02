@@ -6,13 +6,15 @@
 
 ## Automated browser facts
 
-| Viewport | Browser inner width | Document scroll width | Horizontal overflow |
-|---:|---:|---:|---|
-| 1440 | 1440 | 1425 | No |
-| 1024 | 1024 | 1009 | No |
-| 768 | 768 | 753 | No |
-| 390 | 390 | 375 | No |
-| 320 | 320 | 320 | No |
+> **Correction note:** This implementation-agent session originally compared browser `innerWidth` with document `scrollWidth` and incorrectly recorded no overflow at 320 pixels. The first independent integration run later measured document `clientWidth` 305 and `scrollWidth` 320, correctly identifying horizontal overflow. Correction 01 removed that overflow. The table below preserves the original session values while adding the independently measured client width and corrected interpretation.
+
+| Viewport | Browser inner width | Document client width | Document scroll width | Correct interpretation |
+|---:|---:|---:|---:|---|
+| 1440 | 1440 | 1425 | 1425 | No overflow |
+| 1024 | 1024 | 1009 | 1009 | No overflow |
+| 768 | 768 | 753 | 753 | No overflow |
+| 390 | 390 | 375 | 375 | No overflow |
+| 320 | 320 | 305 | 320 | Overflow present in this pre-correction build |
 
 - Landmark query: one `header`, one `nav`, one `main`, and one `footer`.
 - Heading query: one `h1`.
@@ -22,7 +24,7 @@
 
 ## Manual observation
 
-Screens were inspected for preserved hierarchy, readable type, unclipped controls, appropriate logo proportions, single-column mobile flow, and visible focus presentation. The skip link, primary navigation, hero actions, and email links were keyboard reachable. No visual clipping or unexpected horizontal scrolling was observed.
+Screens were inspected for preserved hierarchy, readable type, unclipped controls, appropriate logo proportions, single-column mobile flow, and visible focus presentation. The skip link, primary navigation, hero actions, and email links were keyboard reachable. The implementation agent did not notice horizontal scrolling during this session; the subsequent independent integration test detected and measured it at 320 pixels, and Correction 01 resolved it.
 
 ## Evidence distinctions
 

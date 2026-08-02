@@ -1,13 +1,80 @@
 # Sprint 001 — Developer Integration Test Report
 
 **Current status:** `COMPLETE — PASS`
-**Current result:** `PASS` — Correction 01 fresh independent rerun
+**Current result:** `PASS` — Correction 02 fresh independent rerun
 **Required role:** Fresh independent integration-test task
-**Correction rerun executed:** 2026-08-01 (America/Toronto)
+**Latest correction rerun executed:** 2026-08-02 (America/Toronto)
 
-The historical first integration run failed on 320-pixel horizontal overflow and skip-link focus transfer. Correction 01 was separately authorized and implemented. This report preserves that first result and records a fresh independent rerun against the corrected uncommitted worktree. No implementation repair or code review was performed by the tester.
+The historical first integration run failed on 320-pixel horizontal overflow and skip-link focus transfer. Correction 01 later passed fresh independent integration testing. Correction 02 addresses dependency reproducibility, Node compatibility, component-state documentation, and historical evidence interpretation. This report preserves both prior runs and records a fresh independent Correction 02 rerun. No implementation repair or code review was performed by the tester.
 
-## Current gate decision — Correction 01 rerun
+## Current gate decision — Correction 02 rerun
+
+`PASS`
+
+Correction 02 independently passes its metadata, lockfile, frozen-toolchain, documentation, and focused site-regression checks. Developer Integration Testing is complete for this correction. The Sprint may resume only at the next governance gate: fresh independent code review.
+
+## Correction 02 repository and worktree condition
+
+- Git root: `/Users/paboelustodo/-PROJECTS/elustondoaiweb`.
+- Branch/upstream: `sprint-001-real-website-foundation` / `origin/sprint-001-real-website-foundation`.
+- HEAD: `9a4f0929a55289e1751893665f5cef0d72be1878`; HEAD remained unchanged.
+- Correction 02 remains an uncommitted worktree on the PR branch.
+- Pre-existing work was preserved. No implementation source file or dependency declaration was changed by this tester.
+- `git diff --check` passed.
+- Tester-authored Correction 02 changes are limited to this report and [`evidence/integration/correction-02-retest-observations.md`](evidence/integration/correction-02-retest-observations.md).
+
+## Correction 02 package and compatibility verification
+
+- Every direct dependency and development-dependency declaration is an exact `x.y.z` version; no `latest` specifier remains in `package.json` or `pnpm-lock.yaml`.
+- Runtime dependencies contain only `react` 19.2.8 and `react-dom` 19.2.8.
+- Vite, TypeScript, React build plugin, lint, tests, types, jsdom, and accessibility tooling are development dependencies.
+- `packageManager` is `pnpm@11.9.0`; the available pnpm was 11.9.0.
+- Declared Node range is `^20.19.0 || ^22.13.0 || >=24.0.0`; the independent environment used Node 24.14.0.
+- The declared Node range is compatible with the principal pinned tool engines inspected independently: Vite 8.2.0, Vitest 4.1.10, jsdom 29.0.1, and `@vitejs/plugin-react` 6.0.5. jsdom 29.0.1 provides the constraining `^20.19.0 || ^22.13.0 || >=24.0.0` range reflected in the manifest and README.
+- The lockfile importer reproduces the manifest's exact specifiers and runtime/dev classification. Its diff transparently records jsdom 30.0.1 being replaced with 29.0.1 and the corresponding transitive graph changes.
+- README guidance states Node 20.19+, Node 22.13+, or Node 24+ and pnpm 11.9+, consistent with `package.json`.
+
+## Correction 02 automated results
+
+- `pnpm install --frozen-lockfile`: pass; already up to date.
+- Type-check: pass; no diagnostics.
+- Lint: pass; no findings.
+- Tests: pass; 1 file and 5 tests passed. The unchanged non-failing JSDOM canvas notice was observed.
+- Production build: pass; Vite 8.2.0 transformed 16 modules and emitted the same application asset names and sizes as the Correction 01 build.
+- `git diff --check`: pass.
+
+## Correction 02 documentation verification
+
+- The StableShell responsibility card now identifies an implemented architectural baseline and accurately says the Sprint 001 foundation was independently integration-tested and is awaiting code review and merge.
+- The component catalogue now gives StableShell the same implemented/integration-tested state while leaving all future components planned, designed, specified, or future as appropriate.
+- The historical implementation-agent browser observation now preserves its original mistaken `innerWidth` comparison, adds the correct document `clientWidth`, records 305/320 as overflow at 320 pixels, and explicitly links the interpretation to the first independent failure and Correction 01 resolution.
+- This correction is consistent with the preserved first-run evidence and the passing Correction 01 retest; it does not rewrite the original failure as a pass.
+
+## Correction 02 focused browser regression smoke
+
+- Local production preview: `http://127.0.0.1:4178/`.
+- At 320 CSS pixels, browser inner width was 320 and document client/scroll widths were 305/305; no overflowing element was found.
+- Mobile navigation opened with `aria-expanded="true"`, moved focus to Home, closed on Escape, and returned focus to the menu button without reintroducing overflow.
+- Keyboard Tab exposed the skip link's 3-pixel gold focus outline; Enter preserved `#main-content` and focused `MAIN#main-content` with `tabindex="-1"`.
+- At 1440 CSS pixels, document client/scroll widths were 1425/1425, no overflowing element was found, desktop navigation remained visible, and the mobile menu button remained hidden.
+- One `h1` and one each of header, main, footer, and named primary navigation remained present; all displayed fragment targets resolved.
+- The canonical logo loaded with meaningful alternative text and natural size 1100 × 220.
+- Browser warning/error inspection returned an empty list.
+- Independent requests returned HTTP 200 for `/` and both canonical SVG assets.
+
+## Correction 02 findings and blockers
+
+- Blocking regressions: none observed.
+- New application findings: none observed.
+- Metadata or documentation inconsistencies: none observed within the authorized Correction 02 scope.
+- Environment blockers: none.
+
+## Correction 02 independent evidence
+
+- [`evidence/integration/correction-02-retest-observations.md`](evidence/integration/correction-02-retest-observations.md)
+- Correction implementation evidence under `evidence/corrections/correction-02/` was read as an agent claim and was not substituted for independent execution.
+
+## Historical passing rerun — Correction 01
 
 `PASS`
 

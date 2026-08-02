@@ -24,4 +24,4 @@
 
 ## Active package
 
-- [Sprint 001 — Real Website Foundation](sprints/sprint-001-real-website-foundation/README.md) — `READY`, approved for dispatch to a fresh Codex implementation task.
+- [Sprint 001 — Real Website Foundation](sprints/sprint-001-real-website-foundation/README.md) — `AWAITING_CODE_REVIEW` after passing the Correction 01 integration retest.

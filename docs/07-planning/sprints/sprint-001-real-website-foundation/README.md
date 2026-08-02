@@ -1,6 +1,6 @@
 # Sprint 001 — Real Website Foundation
 
-**Workflow state:** `AWAITING_CODE_REVIEW`
+**Workflow state:** `AWAITING_INTEGRATION_TEST`
 **Product goal:** Create the first real, maintainable Elustondo.ai website foundation and homepage.
 **Authorized component boundary:** Proposed `StableShell` and repository build/test foundation
 **Repository:** `/Users/paboelustodo/-PROJECTS/elustondoaiweb`
@@ -13,15 +13,15 @@
 
 ## Authorization status
 
-Pablo explicitly approved the Sprint Plan, original implementation prompt, and Correction 01. The original implementation and Correction 01 are complete. A fresh independent integration-test rerun passed after Correction 01. The next required gate is independent code review.
+Pablo explicitly approved the Sprint Plan, original implementation prompt, Correction 01, and Correction 02. Correction 01 passed a fresh independent integration-test rerun. Correction 02 addresses four minor PR review findings and now requires focused independent integration testing before code review resumes.
 
 ## Mandatory documents
 
 1. [Sprint Plan](01-sprint-plan.md) — approved intent and acceptance boundary
 2. [Implementation Prompt](02-authorized-implementation-prompt.md) — authorized work order; immutable after dispatch
 3. [Agent Delivered-Scope Report](03-agent-delivered-scope-report.md) — original implementation claim complete
-4. [Developer Integration Test Report](04-developer-integration-test-report.md) — historical first run failed; Correction 01 fresh rerun passed
-5. [Code Review Report](05-code-review-report.md) — not started; next required gate
+4. [Developer Integration Test Report](04-developer-integration-test-report.md) — historical first run failed; Correction 01 fresh rerun passed; Correction 02 retest pending
+5. [Code Review Report](05-code-review-report.md) — not started; resumes after Correction 02 integration testing
 6. [Sprint Approval and Disposition](06-sprint-approval-and-disposition.md) — pending all prior gates
 
 ## Evidence
@@ -34,6 +34,8 @@ Implementation and Correction 01 evidence are indexed. The existing interactive 
 
 1. [Correction 01 Prompt](corrections/correction-01-prompt.md) — authorized two-defect correction; immutable after execution.
 2. [Correction 01 Agent Response](corrections/correction-01-agent-response.md) — implementation claim and evidence; `AWAITING_INTEGRATION_TEST`.
+3. [Correction 02 Prompt](corrections/correction-02-prompt.md) — authorized four-finding PR review correction; immutable after execution.
+4. [Correction 02 Agent Response](corrections/correction-02-agent-response.md) — implementation claim and evidence; `AWAITING_INTEGRATION_TEST`.
 
 ## Final disposition
 

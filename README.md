@@ -4,7 +4,7 @@ This repository contains the Elustondo.ai website and its implementation documen
 
 ## Local workflow
 
-Use Node.js 20 or newer and pnpm:
+Use Node.js 20.19 or newer within a supported release line (Node 20.19+, Node 22.13+, or Node 24+) and pnpm 11.9 or newer. The exact supported ranges are also declared in `package.json`.
 
 ```text
 pnpm install
