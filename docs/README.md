@@ -17,6 +17,11 @@ The imported website documents retain links to their Google Docs sources for pro
 - [AI-Assisted Navigation and Page Generation Architecture](06-solution-design-and-architecture/conversational-page-generation-architecture.md)
 - [Conversational Web App UML](06-solution-design-and-architecture/uml/conversational-web-app-uml.md)
 - [Interactive Page Mockups](06-solution-design-and-architecture/mockups/README.md)
+- [Component Catalogue](06-solution-design-and-architecture/components/component-catalog.md)
+- [Release Plan](07-planning/release-plan.md)
+- [Sprint Roadmap](07-planning/sprint-roadmap.md)
+- [Sprint Registry](07-planning/sprints/README.md)
+- [Sprint 001 — Real Website Foundation](07-planning/sprints/sprint-001-real-website-foundation/README.md)
 - [Conversational POC Delivery Plan](07-planning/conversational-poc-delivery-plan.md)
 - [Claude First-Version Implementation Prompt](07-planning/claude-first-version-implementation-prompt.md)
 - [Sprint Documentation and Governance Model](07-planning/sprint-documentation-and-governance-model.md)
@@ -40,8 +45,8 @@ The imported website documents retain links to their Google Docs sources for pro
 | 03 | System Model and Use Cases | [03-system-model-and-use-cases](03-system-model-and-use-cases/) | Actors, responsibilities, states, flows, and use cases |
 | 04 | Benchmarks, Test Strategy, and Success Criteria | [04-benchmarks-test-strategy-and-success-criteria](04-benchmarks-test-strategy-and-success-criteria/) | POC acceptance and evidence strategy |
 | 05 | Viable Proof of Concept | [05-viable-proof-of-concept](05-viable-proof-of-concept/) | Smallest Firebase conversational proof |
-| 06 | Solution Design and Architecture | [06-solution-design-and-architecture](06-solution-design-and-architecture/) | Stable design, conversational architecture, UML, interactive page mockups, and brand/asset governance |
-| 07 | Planning | [07-planning](07-planning/) | Static development plan, conversational POC delivery plan, first-version Claude implementation prompt, and sprint governance model |
+| 06 | Solution Design and Architecture | [06-solution-design-and-architecture](06-solution-design-and-architecture/) | Stable design, component catalogue, responsibility cards, conversational architecture, UML, interactive page mockups, and brand/asset governance |
+| 07 | Planning | [07-planning](07-planning/) | Release plan, rolling sprint roadmap, Sprint 001 package, static development plan, conversational delivery plan, and sprint governance model |
 | 08 | Specifications as Code | [08-specifications-as-code](08-specifications-as-code/) | Versioned assistant-action contract, route policy, generated-page contract, and HTML policy |
 | 09 | Build and Test | [09-build-and-test](09-build-and-test/) | Future build records and test evidence |
 | 10 | Review and Release | [10-review-and-release](10-review-and-release/) | Future review, preview, release, and DNS approval |

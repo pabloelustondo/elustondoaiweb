@@ -1,0 +1,5 @@
+Browser console inspection — 2026-08-01, final local production-build session
+URL: http://127.0.0.1:4173/
+Filter: warning, warn, error
+Result: []
+No application warnings or errors were returned by the browser inspection API.

@@ -4,6 +4,7 @@ This folder holds visual and interaction design, component responsibilities, tec
 
 ## Current authoritative artifacts
 
+- [Component Architecture and Responsibility Cards](components/README.md)
 - [AI-Assisted Navigation and Page Generation Architecture](conversational-page-generation-architecture.md)
 - [Conversational Web App UML](uml/conversational-web-app-uml.md)
 - [Interactive Page Mockups](mockups/README.md)

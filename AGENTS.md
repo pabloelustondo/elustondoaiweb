@@ -22,6 +22,9 @@ Before making a material product, design, architecture, implementation, deployme
 14. [Website Development Plan v1](docs/07-planning/website-development-plan-v1.md)
 15. [Brand Usage](docs/06-solution-design-and-architecture/brand-usage.md)
 16. [Brand and Graphical Asset Register](docs/06-solution-design-and-architecture/brand-and-graphical-asset-register.md)
+17. [Release Plan](docs/07-planning/release-plan.md)
+18. [Sprint Roadmap](docs/07-planning/sprint-roadmap.md)
+19. [Component Catalogue](docs/06-solution-design-and-architecture/components/component-catalog.md)
 
 The July 28 static documents define the stable site and design foundation. The July 31 conversational documents define the current proof-of-concept evolution and take precedence where runtime scope differs. The user's latest explicit direction overrides both. If durable documents still conflict, stop and report the conflict before implementing.
 
