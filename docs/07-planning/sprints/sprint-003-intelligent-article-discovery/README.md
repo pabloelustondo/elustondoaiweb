@@ -8,6 +8,7 @@
 **Repository:** `/Users/paboelustodo/-PROJECTS/elustondoaiweb`
 **Branch:** `main` at authorization; implementation may not perform Git mutations
 **Authorization baseline:** `97fb034b3162640fcef816169609bb0cf4947c83` plus the then-protected uncommitted Sprint 002 delivery state
+**Implementation baseline:** `5de41e41cd066f9e749f026229d5f07ef539ae78` after Sprint 002 approval and integration
 **Release relationship:** R2 — Complete Public Corporate Site; knowledge foundation for later assistant releases
 
 ## Purpose

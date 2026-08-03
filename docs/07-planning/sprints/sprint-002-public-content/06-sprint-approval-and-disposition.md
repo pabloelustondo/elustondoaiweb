@@ -47,6 +47,8 @@ Sprint 002 is accepted as the permanent public-content baseline.
 
 Pablo explicitly authorized committing and pushing the approved Sprint 002 baseline together with the preserved approved Sprint 003 planning package on 2026-08-03.
 
+Approved integration commit: `5de41e41cd066f9e749f026229d5f07ef539ae78`.
+
 This approval does not authorize deployment, Firebase configuration, credentials, billing changes, a production release, or DNS changes.
 
 ## Final disposition
