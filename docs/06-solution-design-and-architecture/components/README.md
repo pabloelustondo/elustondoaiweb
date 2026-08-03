@@ -6,5 +6,6 @@ This folder turns architectural diagrams into explicit responsibility boundaries
 
 - [Component Catalogue](component-catalog.md)
 - [StableShell Responsibility Card](responsibility-cards/stable-shell.md)
+- [Static Content Model Responsibility Card](responsibility-cards/static-content-model.md)
 
 Additional cards will be added before the sprint that implements each assistant component.

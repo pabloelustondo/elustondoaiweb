@@ -1,12 +1,12 @@
 # Elustondo.ai Product Vision
 
-**Date:** 2026-07-31  
+**Date:** 2026-08-03
 **Status:** Current product vision  
 **Owner:** Elustondo Systems Consulting Inc.
 
 ## Vision statement
 
-Elustondo.ai will be a credible and useful public presence for the company, a knowledge destination for software and AI engineering, a living case study through which SDLC² is exercised and improved, and a controlled laboratory for AI-assisted web interfaces that can navigate existing information or compose a purpose-built page for a visitor.
+Elustondo.ai will be a credible and useful public presence for the company, an intelligent knowledge and application portal for software and AI engineering, a living case study through which SDLC² is exercised and improved, and a controlled laboratory for AI-assisted interfaces that can navigate existing information or compose a purpose-built page for a visitor.
 
 The site should demonstrate the company’s capability through the usefulness, clarity, evidence, and engineering discipline of the experience itself.
 
@@ -81,6 +81,22 @@ Contact
 ```
 
 The exact labels may evolve through information-architecture work, but the product responsibilities remain distinct.
+
+## Intelligent application and project-portal direction
+
+Elustondo.ai is not intended to remain merely a conventional corporate website. The stable public pages are its dependable foundation, while the broader product direction is an intelligent application and entry point to selected Elustondo.ai work, experiments, and knowledge.
+
+The portal is intended to demonstrate four related capabilities:
+
+- discovery of the Elustondo.ai team, services, experience, and engagement fit through approved public profiles and, in later intelligent-interface sprints, source-grounded questions and answers;
+- SDLC² applied to a real, evolving product with durable evidence;
+- advanced agent-assisted user interfaces that adapt navigation and presentation to a visitor's questions;
+- curated discovery of recent articles, technical news, methods, and research organized by subject, time, and relevance;
+- entry points to approved projects and applications under the Elustondo.ai domain.
+
+Potential future destinations include VISTA, the planned Pena agent, LifeBuckets, and other approved explorations. A project may receive a route such as `/vista` only after its public boundary, ownership, security, hosting, and release behavior are specified and approved. Naming a future destination in this vision does not claim that the route or application exists today and does not authorize its implementation or disclosure.
+
+The public experience should always distinguish current working capabilities from planned demonstrations. Release planning will reconcile the implemented state, the product promise, and the language appropriate for public publication.
 
 For prospective engagements, the experience should support:
 

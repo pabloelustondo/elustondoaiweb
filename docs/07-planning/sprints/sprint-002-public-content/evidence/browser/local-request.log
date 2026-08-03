@@ -1,0 +1,17 @@
+Sprint 002 production-preview local request and runtime-source observations — 2026-08-02
+
+Direct HTTP entry returned the production SPA document for:
+- 200 /
+- 200 /articles
+- 200 /projects
+- 200 /methods
+- 200 /people
+- 200 /about
+- 200 /contact
+- 200 /missing-page (client-side branded not-found route)
+
+Runtime independence:
+- Permanent content rendered from typed local records.
+- Application source contains no external-content fetch call, XMLHttpRequest, or Axios dependency.
+- The built Vite runtime contains its same-origin module-preload helper; it does not request Medium, LinkedIn, or GitHub content.
+- Medium, LinkedIn, and GitHub URLs occur only as reviewed static destinations and publication-boundary checks.

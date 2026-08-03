@@ -1,0 +1,29 @@
+Sprint 002 implementation verification — 2026-08-02
+
+CONTROLLED RED
+- New route and publication-boundary tests executed against the Sprint 001 implementation.
+- Result: RED as expected.
+- Observed: missing src/content/siteContent.ts; 10 route/navigation/not-found expectations failed; 3 existing-compatible expectations passed.
+
+GREEN
+- Result: 2 test files passed; 18 tests passed.
+
+FROZEN DEPENDENCY INSTALLATION
+- Command responsibility: pnpm install --frozen-lockfile
+- Result: PASS — lockfile and dependencies already up to date.
+- Toolchain: pnpm 11.9.0.
+
+TYPE CHECK
+- Result: PASS.
+
+LINT
+- Result: PASS.
+
+AUTOMATED TESTS
+- Result: PASS — 2 files, 18 tests.
+- Note: jsdom emitted expected canvas-context notices from accessibility tooling; no website canvas is used and all axe assertions passed.
+
+PRODUCTION BUILD
+- Result: PASS.
+- Vite 8.2.0; 17 modules transformed.
+- Output: dist/index.html 0.62 kB; CSS 6.12 kB; JavaScript 205.00 kB before gzip.

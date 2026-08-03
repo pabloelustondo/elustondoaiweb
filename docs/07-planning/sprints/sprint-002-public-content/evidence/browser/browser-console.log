@@ -1,0 +1,4 @@
+Sprint 002 production-preview browser console — 2026-08-02
+URL under observation: http://127.0.0.1:4177/articles
+Levels inspected: error, warning, log
+Result: no console entries.

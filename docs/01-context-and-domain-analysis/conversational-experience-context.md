@@ -10,7 +10,11 @@ The July 28 baseline defined a static, editorial corporate website. That foundat
 
 The July 31 direction adds a bounded AI-assisted experience. A visitor enters a question or destination request, and the system proposes either navigation to existing permanent content or a focused HTML page inside the stable website shell. This is not an unrestricted unsourced assistant and does not replace the permanent site structure. It is an experiment in navigating and composing useful contextual presentations from approved material.
 
-The project has three purposes: fulfil the company-evaluation and knowledge use cases, exercise and improve SDLC² through a real delivery record, and learn through controlled use of new technologies and interaction patterns.
+The project has three purposes:
+
+- fulfil the company-evaluation and knowledge use cases;
+- exercise and improve SDLC² through a real delivery record; and
+- learn through controlled use of new technologies and interaction patterns.
 
 ## Problem
 

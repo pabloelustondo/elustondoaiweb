@@ -124,7 +124,7 @@ External destinations such as LinkedIn, Medium, and GitHub may appear as simple 
 
 The hero is editorial, not cinematic. It should include:
 - a small corporate identifier: Elustondo Systems Consulting Inc.;
-- the principal statement: “Practical software architecture, AI-assisted engineering, and agentic systems.”;
+- the principal statement: “Spec-driven AI-assisted software engineering, solution architecture, agentic systems, and modernization.”;
 - a short explanation of the practice;
 - two restrained actions, initially “Read our work” and “View projects.”
 
