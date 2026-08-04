@@ -1,8 +1,8 @@
 import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { App } from './App'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { App, ArticlesExperience } from './App'
 
 function renderAt(path: string) {
   window.history.replaceState(null, '', path)
@@ -89,5 +89,36 @@ describe('StableShell routes', () => {
       expect((await axe(view.container)).violations).toHaveLength(0)
       view.unmount()
     }
+  })
+
+  it('keeps pillar relevance and Latest as visibly separate article journeys', () => {
+    renderAt('/articles')
+    expect(screen.getByRole('heading', { name: 'Start with the ideas that matter to your work' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Recent writing' })).toBeInTheDocument()
+    expect(screen.getByText(/strictly chronological/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Useful writing without an assigned pillar' })).toBeInTheDocument()
+  })
+
+  it('shows canonical titles and Medium destinations without a visitor-time request', () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+    renderAt('/articles')
+    const canonicalLinks = screen.getAllByRole('link', { name: 'Read on Medium' })
+    expect(screen.getAllByText('The Three Amigos Agent Architecture').length).toBeGreaterThan(0)
+    expect(canonicalLinks.every((link) => link.getAttribute('href')?.startsWith('https://medium.com/@pabloelustondo/'))).toBe(true)
+    expect(fetchSpy).not.toHaveBeenCalled()
+    fetchSpy.mockRestore()
+  })
+
+  it('presents empty, partial, and refresh-failure states clearly', () => {
+    const empty = render(<ArticlesExperience records={[]} />)
+    expect(screen.getByRole('status')).toHaveTextContent('No approved articles yet')
+    empty.unmount()
+
+    const partial = render(<ArticlesExperience status="PARTIAL" />)
+    expect(screen.getByRole('status')).toHaveTextContent('partially refreshed')
+    partial.unmount()
+
+    render(<ArticlesExperience status="REFRESH_FAILURE" />)
+    expect(screen.getByRole('status')).toHaveTextContent('last known good local snapshot')
   })
 })

@@ -1,3 +1,6 @@
+import { articleSummaries } from './articles/articleEditorialMetadata'
+import { approvedArticleSnapshot } from './articles/approvedArticleSnapshot'
+
 export type PublicationState = 'PUBLIC'
 export type ProjectDisclosure = 'PUBLIC_REPOSITORY' | 'PUBLIC_SUMMARY_ONLY' | 'PRIVATE'
 
@@ -6,6 +9,8 @@ export interface ArticleRecord {
   title: string
   summary?: string
   publishedLabel: string
+  publishedAt: string
+  author: string
   url: string
   source: 'MEDIUM_ELUSTONDO_AI_LIST'
   publicationState: PublicationState
@@ -41,52 +46,30 @@ export const company = {
   email: 'pablo@elustondo.ai',
 } as const
 
-export const articles: readonly ArticleRecord[] = [
-  {
-    id: 'three-amigos-agent-architecture',
-    title: 'The Three Amigos Agent Architecture',
-    summary: 'Why I use GPT, Claude, and Gemini as different cognitive agents and why context changes everything.',
-    publishedLabel: 'June 25, 2026',
-    url: 'https://medium.com/@pabloelustondo/the-three-amigos-agent-architecture-9b65d9344cf9',
-    source: 'MEDIUM_ELUSTONDO_AI_LIST',
-    publicationState: 'PUBLIC',
-  },
-  {
-    id: 'domain-analysis-responsibility-driven-design',
-    title: 'Domain Analysis & Wirfs-Brock’s Responsibility-Driven Design for Agentic AI',
-    summary: 'From domain language to responsibilities, collaborators, and Agent-Oriented Design.',
-    publishedLabel: 'July 15, 2026',
-    url: 'https://medium.com/@pabloelustondo/domain-analysis-wirfs-brocks-responsibility-driven-design-for-agentic-ai-d0cbb412315c',
-    source: 'MEDIUM_ELUSTONDO_AI_LIST',
-    publicationState: 'PUBLIC',
-  },
-  {
-    id: 'practical-local-ai-2026-part-one',
-    title: 'The Rise of Practical Local AI in 2026 Part I: Models, Runtimes, and the Capability Cascade',
-    summary: 'Use the strongest useful intelligence during development — and the minimum sufficient intelligence during execution.',
-    publishedLabel: 'July 24, 2026',
-    url: 'https://medium.com/@pabloelustondo/the-rise-of-practical-local-ai-in-2026-part-i-models-runtimes-and-the-capability-cascade-ca7e94cdb449',
-    source: 'MEDIUM_ELUSTONDO_AI_LIST',
-    publicationState: 'PUBLIC',
-  },
-  {
-    id: 'solid-in-the-ai-era',
-    title: 'SOLID in the AI Era: Same Principles, New Design Units',
-    publishedLabel: 'July 5, 2026',
-    url: 'https://medium.com/@pabloelustondo/solid-2-0-rethinking-architecture-best-practice-for-the-agentic-era-31f8d7aa9beb',
-    source: 'MEDIUM_ELUSTONDO_AI_LIST',
-    publicationState: 'PUBLIC',
-  },
-  {
-    id: 'ai-assisted-legacy-fx-payment-system',
-    title: 'An AI-Assisted Strategy for a Legacy FX Payment System: A Rotman Capstone Project',
-    summary: 'Originally submitted in October 2025 for the Generative AI for Business program at the University of Toronto’s Rotman School of Management.',
-    publishedLabel: 'August 1, 2026',
-    url: 'https://medium.com/@pabloelustondo/an-ai-assisted-strategy-for-a-legacy-fx-payment-system-a-rotman-capstone-project-74d10ab995f6',
-    source: 'MEDIUM_ELUSTONDO_AI_LIST',
-    publicationState: 'PUBLIC',
-  },
+const publicationDate = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+})
+const sprintTwoArticleOrder = [
+  'three-amigos-agent-architecture',
+  'domain-analysis-responsibility-driven-design',
+  'practical-local-ai-2026-part-one',
+  'solid-in-the-ai-era',
+  'ai-assisted-legacy-fx-payment-system',
 ]
+
+export const articles: readonly ArticleRecord[] = approvedArticleSnapshot.articles
+  .map((article) => ({
+    id: article.sourceId,
+    title: article.canonicalTitle,
+    summary: articleSummaries[article.sourceId],
+    publishedLabel: publicationDate.format(new Date(article.publishedAt)),
+    publishedAt: article.publishedAt,
+    author: article.author,
+    url: article.canonicalUrl,
+    source: 'MEDIUM_ELUSTONDO_AI_LIST' as const,
+    publicationState: 'PUBLIC' as const,
+  }))
+  .sort((left, right) => sprintTwoArticleOrder.indexOf(left.id) - sprintTwoArticleOrder.indexOf(right.id))
 
 export function isProjectPublishable(project: ProjectRecord) {
   if (project.disclosure === 'PRIVATE') return false

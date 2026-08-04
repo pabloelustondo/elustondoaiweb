@@ -34,6 +34,8 @@ Approved Medium collection
 
 The approved Sprint Plan defines the canonical Medium list, developer-run refresh boundary, initial pillar taxonomy, relevance rules, Pablo-owned overrides, provenance fields, and failure behavior. It preserves the Sprint 002 rule that public visitor requests do not fetch Medium at runtime. Article-list membership authorizes indexing, while imported metadata and deterministic classifications remain traceable and correctable.
 
+After the initial implementation, Pablo authorized Correction 001: deployable Firebase scheduled-function and LangChain/Gemini curator code running every 15 minutes. This correction preserves the no-visitor-time-Medium rule and last-known-good snapshot, while the real provider, Firebase Storage, scheduler, public-site snapshot integration, cost, and deployment gates remain pending.
+
 ## Roadmap rules
 
 - Only the exact approved Sprint Plan and immutable implementation prompt activate work.
@@ -46,4 +48,4 @@ The approved Sprint Plan defines the canonical Medium list, developer-run refres
 
 - [Sprint 001 — Real Website Foundation](sprints/sprint-001-real-website-foundation/README.md) — `APPROVED` and merged to `main` with explicit deferrals.
 - [Sprint 002 — Public Content](sprints/sprint-002-public-content/README.md) — `APPROVED`; independent integration testing passed, code review approved integration with minor findings, and Pablo accepted the Sprint.
-- [Sprint 003 — Intelligent Article Discovery](sprints/sprint-003-intelligent-article-discovery/README.md) — `READY`; Pablo approved the Sprint Plan and immutable implementation prompt for bounded local implementation.
+- [Sprint 003 — Intelligent Article Discovery](sprints/sprint-003-intelligent-article-discovery/README.md) — `AWAITING_CODE_REVIEW`; Pablo's independent local integration test passed with the explicit curator-to-site and live-cloud boundaries recorded.

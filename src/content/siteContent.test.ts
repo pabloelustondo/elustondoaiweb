@@ -13,6 +13,11 @@ describe('approved static content boundary', () => {
     expect(articles).toHaveLength(5)
     expect(articles.every((article) => article.source === 'MEDIUM_ELUSTONDO_AI_LIST')).toBe(true)
     expect(articles.every((article) => article.url.startsWith('https://medium.com/@pabloelustondo/'))).toBe(true)
+    expect(articles.slice(0, 3).map((article) => article.id)).toEqual([
+      'three-amigos-agent-architecture',
+      'domain-analysis-responsibility-driven-design',
+      'practical-local-ai-2026-part-one',
+    ])
   })
 
   it('contains only the approved public GitHub project', () => {

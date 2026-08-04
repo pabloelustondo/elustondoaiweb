@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import { articles, company, methods, people, projects } from './content/siteContent'
+import { approvedArticleSnapshot } from './content/articles/approvedArticleSnapshot'
+import { APPROVED_PILLARS, applyArticleTaxonomy, editorialTaxonomy, type ArticlePillar, type ClassifiedArticle } from './content/articles/articleTaxonomy'
+import { rankLatest, rankPillarArticles } from './content/articles/articleRanker'
 
 const navigation = [
   ['Home', '/'],
@@ -101,13 +104,84 @@ function Page({ eyebrow, title, intro, children }: { eyebrow: string; title: str
   </main>
 }
 
-function ArticleCard({ article }: { article: (typeof articles)[number] }) {
+function ArticleCard({ article, headingLevel = 2 }: { article: (typeof articles)[number]; headingLevel?: 2 | 3 }) {
+  const Heading = headingLevel === 3 ? 'h3' : 'h2'
   return <article className="content-card">
     <p className="card-label">Article · {article.publishedLabel}</p>
-    <h2>{article.title}</h2>
+    <Heading>{article.title}</Heading>
     {article.summary && <p>{article.summary}</p>}
     <ExternalLink href={article.url}>Read on Medium</ExternalLink>
   </article>
+}
+
+const pillarDefinitions: Record<ArticlePillar, string> = {
+  'SDLC²': 'Specification-driven and evidence-driven AI-assisted software engineering.',
+  Architecture: 'System boundaries, responsibilities, runtimes, and agent design.',
+  Modernization: 'Careful evolution of established software and delivery systems.',
+}
+
+const classifiedArticles = applyArticleTaxonomy(approvedArticleSnapshot, editorialTaxonomy)
+const publicArticleById = new Map(articles.map((article) => [article.id, article]))
+
+function DiscoveryArticle({ article, reasons }: { article: ClassifiedArticle; reasons: readonly string[] }) {
+  const publicArticle = publicArticleById.get(article.sourceId)
+  if (!publicArticle) return null
+  return <article className="discovery-card">
+    <p className="card-label">{publicArticle.author} · {publicArticle.publishedLabel}</p>
+    <h4>{publicArticle.title}</h4>
+    {publicArticle.summary && <p>{publicArticle.summary}</p>}
+    <p className="relevance-reason"><strong>Why this appears:</strong> {reasons.join(' ')}</p>
+    <ExternalLink href={publicArticle.url}>Read on Medium</ExternalLink>
+  </article>
+}
+
+export type ArticleLibraryStatus = 'READY' | 'PARTIAL' | 'REFRESH_FAILURE'
+
+export function ArticlesExperience({ records = classifiedArticles, status = 'READY' }: { records?: readonly ClassifiedArticle[]; status?: ArticleLibraryStatus }) {
+  const latest = rankLatest(records)
+  const unclassified = records.filter((article) => article.classificationState === 'UNCLASSIFIED')
+
+  if (records.length === 0) {
+    return <div className="library-state" role="status"><h2>No approved articles yet</h2><p>The article library will appear after an approved local snapshot is available.</p></div>
+  }
+
+  return <div className="article-library">
+    {status !== 'READY' && <div className="library-state" role="status">
+      <h2>{status === 'PARTIAL' ? 'Article index partially refreshed' : 'Latest refresh was not published'}</h2>
+      <p>{status === 'PARTIAL' ? 'The reviewed local snapshot remains available while some source records await review.' : 'The last known good local snapshot remains available while the refresh issue is reviewed.'}</p>
+    </div>}
+    <section className="pillar-discovery" aria-labelledby="pillar-discovery-title">
+      <p className="eyebrow">Browse by pillar</p>
+      <h2 id="pillar-discovery-title">Start with the ideas that matter to your work</h2>
+      <div className="pillar-grid">
+        {APPROVED_PILLARS.map((pillar) => {
+          const ranked = rankPillarArticles(records, pillar)
+          return <section className="pillar-panel" key={pillar} aria-labelledby={`pillar-${pillar}`}>
+            <h3 id={`pillar-${pillar}`}>{pillar}</h3>
+            <p>{pillarDefinitions[pillar]}</p>
+            <div className="pillar-articles">{ranked.length > 0
+              ? ranked.map(({ article, reasons }) => <DiscoveryArticle key={article.sourceId} article={article} reasons={reasons} />)
+              : <p className="empty-state">No approved articles are classified here yet.</p>}</div>
+          </section>
+        })}
+      </div>
+    </section>
+    <section className="unclassified-note" aria-labelledby="unclassified-title">
+      <p className="eyebrow">Awaiting classification</p>
+      <h2 id="unclassified-title">Useful writing without an assigned pillar</h2>
+      <p>{unclassified.length === 0 ? 'Every approved article currently has an editorial assignment.' : `${unclassified.length} approved ${unclassified.length === 1 ? 'article remains' : 'articles remain'} visible in Latest while Pablo decides where ${unclassified.length === 1 ? 'it belongs' : 'they belong'}.`}</p>
+      {unclassified.length > 0 && <ul>{unclassified.map((article) => <li key={article.sourceId}>{article.canonicalTitle}</li>)}</ul>}
+    </section>
+    <section className="latest-writing" aria-labelledby="latest-writing-title">
+      <p className="eyebrow">Latest by publication date</p>
+      <h2 id="latest-writing-title">Recent writing</h2>
+      <p className="section-intro">This stream is strictly chronological. Editorial relevance never changes its order.</p>
+      <div className="content-list">{latest.map((article) => {
+        const publicArticle = publicArticleById.get(article.sourceId)
+        return publicArticle ? <ArticleCard key={article.sourceId} article={publicArticle} headingLevel={3} /> : null
+      })}</div>
+    </section>
+  </div>
 }
 
 export function HomePage() {
@@ -141,7 +215,7 @@ export function HomePage() {
 }
 
 function ArticlesPage() {
-  return <Page eyebrow="Knowledge" title="Articles" intro="Essays and technical material selected from Pablo Elustondo’s approved Elustondo.ai Medium list."><div className="content-list">{articles.map((article) => <ArticleCard key={article.id} article={article} />)}</div></Page>
+  return <Page eyebrow="Knowledge" title="Articles" intro="Explore approved writing by editorial pillar and relevance, or follow the separate newest-first stream."><ArticlesExperience /></Page>
 }
 
 function ProjectsPage() {

@@ -7,9 +7,12 @@
 |---|---|---|---|
 | `StableShell` | Own permanent identity, semantic page structure, navigation, responsive layout, static content presentation, and graceful operation without AI. | Sprint 001 approved and merged to `main` | Sprint 001 |
 | Static Content Model | Own reviewed local article, project, method, person, company, contact, download, and site-metadata records plus their publication boundary. | Implemented, independently tested, and approved in Sprint 002 | Sprint 002 |
-| `ArticleSourceSnapshot` | Import and preserve canonical metadata from the approved Medium source collection outside the visitor request path. | Approved for Sprint 003 implementation | Sprint 003 |
-| `ArticleTaxonomy` | Classify articles by approved editorial pillar and subject while preserving provenance and correctable overrides. | Planned | Sprint 003 |
-| `ArticleRanker` | Produce transparent ordering signals for recency and relevance without hiding editorial choices inside an unexplained score. | Planned | Sprint 003 |
+| `ArticleSourceSnapshot` | Import and preserve canonical metadata from the approved Medium source collection outside the visitor request path. | Implemented locally with deterministic approved fixture and candidate/diff boundary; Pablo's integration test passed with live remote discovery postponed; awaiting code review | Sprint 003 |
+| `ArticleTaxonomy` | Classify articles by approved editorial pillar and subject while preserving provenance and correctable overrides. | Implemented locally; Pablo's integration test passed; awaiting code review | Sprint 003 |
+| `ArticleRanker` | Produce transparent ordering signals for recency and relevance without hiding editorial choices inside an unexplained score. | Implemented locally; Pablo's integration test passed; awaiting code review | Sprint 003 |
+| `ArticleCurator` | Run one bounded curation cycle, preserve last-known-good state, confirm removals twice, preserve editorial overrides, and coordinate source discovery, classification, and storage. | Implemented locally in Correction 001; live Medium/Gemini/Firebase boundaries remain unverified | Sprint 003 Correction 001 |
+| LangChain Medium Source and Classifier | Use Gemini URL context to observe exact Medium-list membership and structured output to classify only within approved pillars. | Deployable adapter implemented; no live model call performed | Sprint 003 Correction 001 |
+| Curator Snapshot Store | Persist current curator state and bounded run records through local-file or Firebase Storage adapters. | Local adapter verified; Firebase Storage adapter unverified | Sprint 003 Correction 001 |
 | `AssistantPanel` | Own visitor question entry, suggestions, status, clarification, and request cancellation. | Designed; not implemented | Sprint 004 |
 | `SiteNavigator` | Convert an approved route identifier into shell-owned navigation. Never execute arbitrary URLs. | Designed; not implemented | Sprint 004 |
 | `GeneratedPageCanvas` | Present validated generated HTML within the documented isolated, scriptless boundary. | Designed; not implemented | Sprint 004 |
@@ -34,3 +37,5 @@ Sprint 002 implemented the Static Content Model and integrated it with `StableSh
 ## Sprint 003 boundary
 
 Sprint 003 is approved to add controlled Medium metadata ingestion and intelligent article organization by editorial pillar or subject, publication time, and explainable relevance. It must produce a stable local snapshot rather than fetch Medium during each visitor request. The approved package defines the canonical Medium list, three initial pillars, deterministic ranking signals, developer-run refresh boundary, Pablo-owned editorial overrides, and required review evidence.
+
+Correction 001 explicitly adds a scheduled deployable curator and LangChain/Gemini implementation while preserving the visitor-time boundary. The correction does not connect the public React application to the cloud snapshot and does not authorize live model use, Firebase resources, billing, or deployment.
