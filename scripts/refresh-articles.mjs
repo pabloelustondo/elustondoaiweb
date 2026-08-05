@@ -1,12 +1,12 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { normalizeArticleSource } from '../src/content/articles/articleSourceSnapshot.ts'
+import { normalizeArticleSource } from '../frontend/src/content/articles/articleSourceSnapshot.ts'
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
-const fixturePath = resolve(repositoryRoot, 'src/content/articles/approvedMediumListFixture.json')
-const approvedSnapshotPath = resolve(repositoryRoot, 'src/content/articles/approvedArticleSnapshot.json')
-const defaultOutput = resolve(repositoryRoot, 'docs/07-planning/sprints/sprint-003-intelligent-article-discovery/evidence/content-refresh')
+const fixturePath = resolve(repositoryRoot, 'frontend/src/content/articles/approvedMediumListFixture.json')
+const approvedSnapshotPath = resolve(repositoryRoot, 'frontend/src/content/articles/approvedArticleSnapshot.json')
+const defaultOutput = resolve(repositoryRoot, 'docs/SDLC2/07-planning/sprints/sprint-003-intelligent-article-discovery/evidence/content-refresh')
 const outputFlag = process.argv.indexOf('--output')
 const outputDirectory = outputFlag >= 0 && process.argv[outputFlag + 1]
   ? resolve(process.cwd(), process.argv[outputFlag + 1])
