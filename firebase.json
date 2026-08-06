@@ -1,0 +1,50 @@
+{
+  "functions": [
+    {
+      "source": "backend/article-curator",
+      "codebase": "article-curator",
+      "runtime": "nodejs22",
+      "ignore": [
+        ".local",
+        "coverage",
+        "node_modules",
+        "src/**/*.test.ts"
+      ],
+      "predeploy": [
+        "pnpm --dir \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "frontend/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/articles",
+        "function": {
+          "functionId": "articles",
+          "region": "northamerica-northeast1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "storage": {
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true
+    }
+  }
+}

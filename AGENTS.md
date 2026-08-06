@@ -4,27 +4,34 @@ These instructions apply to the entire `elustondoaiweb` repository. They define 
 
 ## Read first
 
-Before making a material product, design, architecture, implementation, deployment, or release decision, read:
+Begin with the four maintained breadth-first guides:
 
-1. [Product Vision](docs/02-intent/product-vision.md)
-2. [Repository Intent](docs/02-intent/repository-intent.md)
-3. [Conversational Page Generation Intent](docs/02-intent/conversational-page-generation-intent.md)
-4. [Generated Content Policy](docs/02-intent/generated-content-policy.md)
-5. [Elustondo.ai System Model and Use Cases](docs/03-system-model-and-use-cases/conversational-page-generation-system-model-and-use-cases.md)
-6. [Firebase Conversational POC](docs/05-viable-proof-of-concept/firebase-conversational-page-generation-poc.md)
-7. [AI-Assisted Navigation and Page Generation Architecture](docs/06-solution-design-and-architecture/conversational-page-generation-architecture.md)
-8. [Conversational Web App UML](docs/06-solution-design-and-architecture/uml/conversational-web-app-uml.md)
-9. [Interactive Page Mockups](docs/06-solution-design-and-architecture/mockups/README.md)
-10. [Sprint Documentation and Governance Model](docs/07-planning/sprint-documentation-and-governance-model.md)
-11. [Assistant Navigation and Generated Page Contract](docs/08-specifications-as-code/generated-page-contract.md)
-12. [Website Project Index](docs/01-context-and-domain-analysis/website-project-index.md)
-13. [Website Design Specification v1](docs/06-solution-design-and-architecture/website-design-specification-v1.md)
-14. [Website Development Plan v1](docs/07-planning/website-development-plan-v1.md)
-15. [Brand Usage](docs/06-solution-design-and-architecture/brand-usage.md)
-16. [Brand and Graphical Asset Register](docs/06-solution-design-and-architecture/brand-and-graphical-asset-register.md)
-17. [Release Plan](docs/07-planning/release-plan.md)
-18. [Sprint Roadmap](docs/07-planning/sprint-roadmap.md)
-19. [Component Catalogue](docs/06-solution-design-and-architecture/components/component-catalog.md)
+1. [System Definition](docs/01_SystemDefinition/README_ai.md)
+2. [Developer Guide](docs/02_DeveloperGuide/README_ai.md)
+3. [Architecture](docs/03_Architecture/README_ai.md)
+4. [SDLC2 responsibility and navigation guide](docs/04_SDLC2/README_ai.md)
+
+Before making a material product, design, architecture, implementation, deployment, or release decision, also read:
+
+1. [Product Vision](docs/04_SDLC2/02-intent/product-vision.md)
+2. [Repository Intent](docs/04_SDLC2/02-intent/repository-intent.md)
+3. [Conversational Page Generation Intent](docs/04_SDLC2/02-intent/conversational-page-generation-intent.md)
+4. [Generated Content Policy](docs/04_SDLC2/02-intent/generated-content-policy.md)
+5. [Elustondo.ai System Model and Use Cases](docs/04_SDLC2/03-system-model-and-use-cases/conversational-page-generation-system-model-and-use-cases.md)
+6. [Firebase Conversational POC](docs/04_SDLC2/05-viable-proof-of-concept/firebase-conversational-page-generation-poc.md)
+7. [AI-Assisted Navigation and Page Generation Architecture](docs/04_SDLC2/06-solution-design-and-architecture/conversational-page-generation-architecture.md)
+8. [Conversational Web App UML](docs/04_SDLC2/06-solution-design-and-architecture/uml/conversational-web-app-uml.md)
+9. [Interactive Page Mockups](docs/04_SDLC2/06-solution-design-and-architecture/mockups/README.md)
+10. [Sprint Documentation and Governance Model](docs/04_SDLC2/07-planning/sprint-documentation-and-governance-model.md)
+11. [Assistant Navigation and Generated Page Contract](docs/04_SDLC2/08-specifications-as-code/generated-page-contract.md)
+12. [Website Project Index](docs/04_SDLC2/01-context-and-domain-analysis/website-project-index.md)
+13. [Website Design Specification v1](docs/04_SDLC2/06-solution-design-and-architecture/website-design-specification-v1.md)
+14. [Website Development Plan v1](docs/04_SDLC2/07-planning/website-development-plan-v1.md)
+15. [Brand Usage](docs/04_SDLC2/06-solution-design-and-architecture/brand-usage.md)
+16. [Brand and Graphical Asset Register](docs/04_SDLC2/06-solution-design-and-architecture/brand-and-graphical-asset-register.md)
+17. [Release Plan](docs/04_SDLC2/07-planning/release-plan.md)
+18. [Sprint Roadmap](docs/04_SDLC2/07-planning/sprint-roadmap.md)
+19. [Component Catalogue](docs/04_SDLC2/06-solution-design-and-architecture/components/component-catalog.md)
 
 The July 28 static documents define the stable site and design foundation. The July 31 conversational documents define the current proof-of-concept evolution and take precedence where runtime scope differs. The user's latest explicit direction overrides both. If durable documents still conflict, stop and report the conflict before implementing.
 
@@ -62,7 +69,7 @@ The July 28 static documents define the stable site and design foundation. The J
 
 - Inspect the actual repository path, Git root, branch, status, and relevant files before changing anything.
 - Preserve unrelated and user-authored changes. Do not overwrite an existing artifact without first comparing it.
-- Route durable artifacts to the corresponding numbered folder under `docs/`; update indexes and links when adding documents.
+- Route durable change artifacts to the corresponding numbered folder under `docs/04_SDLC2/`; update indexes and links when adding documents.
 - The Sprint Documentation and Governance Model does not itself activate work. Begin sprint implementation only when Pablo explicitly authorizes the exact Sprint Plan and implementation prompt.
 - Treat methodology learning as a project output: record specification ambiguities, prompt quality, claim accuracy, evidence gaps, review findings, and proposed SDLC² improvements in the applicable sprint record.
 - Planning documents and placeholders do not by themselves authorize implementation beyond the user's request.

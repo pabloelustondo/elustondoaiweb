@@ -1,27 +1,39 @@
-# Elustondo.ai website
+# Elustondo.ai
 
-This repository contains the Elustondo.ai website and its implementation documentation. Sprint 001 establishes a local-only React, TypeScript, and Vite homepage foundation; it does not include backend, AI, Firebase, deployment, or DNS behavior.
+This repository contains the visitor-facing Elustondo.ai application, the scheduled Article Curator backend, and the documentation used to understand, change, and operate them.
 
-## Local workflow
+## Repository map
 
-Use Node.js 20.19 or newer within a supported release line (Node 20.19+, Node 22.13+, or Node 24+) and pnpm 11.9 or newer. The exact supported ranges are also declared in `package.json`.
+| Area | Responsibility |
+|---|---|
+| [`frontend/`](frontend/) | Visitor-facing React and Vite website. |
+| [`backend/article-curator/`](backend/article-curator/) | Scheduled Article Curator implemented for Firebase Functions. |
+| [`docs/01_SystemDefinition/`](docs/01_SystemDefinition/README_ai.md) | What Elustondo.ai is, why it exists, its actors, capabilities, journeys, rules, and boundaries. |
+| [`docs/02_DeveloperGuide/`](docs/02_DeveloperGuide/README_ai.md) | How developers install, run, test, build, and safely operate the current system. |
+| [`docs/03_Architecture/`](docs/03_Architecture/README_ai.md) | What the current architecture is, why its boundaries exist, and which proposals remain future work. |
+| [`docs/04_SDLC2/`](docs/04_SDLC2/README_ai.md) | How the system changes: intent, specifications, sprint governance, evidence, and learning. |
+| [`scripts/`](scripts/) | Repository-level maintenance tools that coordinate components. |
+
+The frontend remains useful without the curator or any AI service. The Article Curator has a deterministic offline path and a deployable Firebase implementation, but this repository structure does not claim that the function is deployed or that the public frontend consumes its cloud snapshot.
+
+## Essential commands
+
+Use Node.js 20.19 or newer within a supported release line and pnpm 11.9 or newer. The Article Curator deploys on the Node.js 22 Firebase runtime.
 
 ```text
-pnpm install
-pnpm run typecheck
-pnpm run lint
+pnpm install --frozen-lockfile
+pnpm frontend:dev
+pnpm typecheck
+pnpm lint
 pnpm test
-pnpm run build
-pnpm run preview
+pnpm build
+pnpm curator:local:twice
 ```
 
-The preview command prints the local URL. The application is self-contained after its local assets load and has no runtime backend dependency.
+The aggregate checks run both workspace packages. See the [Developer Guide](docs/02_DeveloperGuide/README_ai.md) for package-specific commands, safe curator operation, configuration, and gated deployment interfaces.
 
-## Project structure
+## Governance and identity
 
-- `src/App.tsx`: semantic shell components and homepage content.
-- `src/styles.css`: design tokens and responsive presentation.
-- `public/assets/`: approved build-time copies of canonical brand assets.
-- `docs/`: product, design, planning, evidence, and governance records.
+Read [`AGENTS.md`](AGENTS.md) before material work. SDLC2 sprint records and their human-approval boundaries remain under [`docs/04_SDLC2/07-planning/`](docs/04_SDLC2/07-planning/).
 
-The canonical brand masters remain in the controlled corporate Brand & Marketing collection. Repository copies are build-time assets, not competing masters.
+Canonical brand masters remain in the controlled corporate Brand & Marketing collection. Files under [`frontend/public/assets/`](frontend/public/assets/) are approved build-time copies, not competing masters.
