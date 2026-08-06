@@ -9,34 +9,53 @@ import type {
   CuratorState,
   CuratorStore,
 } from './contracts.js'
+import { parseCuratorState } from './state-schema.js'
+
+interface StorageFileLike {
+  exists(): Promise<[boolean]>
+  download(): Promise<[Buffer]>
+  save(contents: string, options: Record<string, unknown>): Promise<unknown>
+}
+
+interface StorageBucketLike {
+  file(path: string): StorageFileLike
+}
+
+type StorageBucketProvider = () => StorageBucketLike
 
 export class FirebaseStorageCuratorStore implements CuratorStore {
   constructor(
     private readonly statePath = 'article-curator/current.json',
     private readonly runPrefix = 'article-curator/runs',
+    private readonly bucketProvider?: StorageBucketProvider,
   ) {
-    if (getApps().length === 0) initializeApp()
+    if (!bucketProvider && getApps().length === 0) initializeApp()
+  }
+
+  private bucket(): StorageBucketLike {
+    return this.bucketProvider?.() ?? getStorage().bucket()
   }
 
   async loadState(): Promise<CuratorState> {
-    const file = getStorage().bucket().file(this.statePath)
+    const file = this.bucket().file(this.statePath)
     const [exists] = await file.exists()
     if (!exists) return cloneBootstrapCuratorState()
     const [contents] = await file.download()
-    return JSON.parse(contents.toString('utf8')) as CuratorState
+    return parseCuratorState(JSON.parse(contents.toString('utf8')))
   }
 
-  async saveState(state: CuratorState): Promise<void> {
-    await getStorage().bucket().file(this.statePath).save(`${JSON.stringify(state, null, 2)}\n`, {
+  async commitState(state: CuratorState, requiredRun: CuratorRunSummary): Promise<void> {
+    const committedState = parseCuratorState({ ...state, lastRun: requiredRun })
+    await this.bucket().file(this.statePath).save(`${JSON.stringify(committedState, null, 2)}\n`, {
       contentType: 'application/json; charset=utf-8',
       resumable: false,
       metadata: { cacheControl: 'no-store' },
     })
   }
 
-  async appendRunLog(run: CuratorRunSummary): Promise<void> {
+  async appendAuditLog(run: CuratorRunSummary): Promise<void> {
     const timestamp = run.startedAt.replace(/[:.]/g, '-')
-    await getStorage().bucket().file(`${this.runPrefix}/${timestamp}-${run.runId}.json`).save(
+    await this.bucket().file(`${this.runPrefix}/${timestamp}-${run.runId}.json`).save(
       `${JSON.stringify(run, null, 2)}\n`,
       {
         contentType: 'application/json; charset=utf-8',
@@ -55,21 +74,22 @@ export class LocalFileCuratorStore implements CuratorStore {
 
   async loadState(): Promise<CuratorState> {
     try {
-      return JSON.parse(await readFile(this.statePath, 'utf8')) as CuratorState
+      return parseCuratorState(JSON.parse(await readFile(this.statePath, 'utf8')))
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') return cloneBootstrapCuratorState()
       throw error
     }
   }
 
-  async saveState(state: CuratorState): Promise<void> {
+  async commitState(state: CuratorState, requiredRun: CuratorRunSummary): Promise<void> {
+    const committedState = parseCuratorState({ ...state, lastRun: requiredRun })
     await mkdir(dirname(this.statePath), { recursive: true })
     const temporaryPath = `${this.statePath}.next`
-    await writeFile(temporaryPath, `${JSON.stringify(state, null, 2)}\n`, 'utf8')
+    await writeFile(temporaryPath, `${JSON.stringify(committedState, null, 2)}\n`, 'utf8')
     await rename(temporaryPath, this.statePath)
   }
 
-  async appendRunLog(run: CuratorRunSummary): Promise<void> {
+  async appendAuditLog(run: CuratorRunSummary): Promise<void> {
     await mkdir(dirname(this.runLogPath), { recursive: true })
     await appendFile(this.runLogPath, `${JSON.stringify(run)}\n`, 'utf8')
   }

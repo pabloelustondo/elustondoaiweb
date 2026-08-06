@@ -6,7 +6,7 @@ import { normalizeArticleSource } from '../frontend/src/content/articles/article
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const fixturePath = resolve(repositoryRoot, 'frontend/src/content/articles/approvedMediumListFixture.json')
 const approvedSnapshotPath = resolve(repositoryRoot, 'frontend/src/content/articles/approvedArticleSnapshot.json')
-const defaultOutput = resolve(repositoryRoot, 'docs/SDLC2/07-planning/sprints/sprint-003-intelligent-article-discovery/evidence/content-refresh')
+const defaultOutput = resolve(repositoryRoot, 'docs/04_SDLC2/07-planning/sprints/sprint-003-intelligent-article-discovery/evidence/content-refresh')
 const outputFlag = process.argv.indexOf('--output')
 const outputDirectory = outputFlag >= 0 && process.argv[outputFlag + 1]
   ? resolve(process.cwd(), process.argv[outputFlag + 1])

@@ -28,7 +28,7 @@ export interface MethodRecord {
   id: string
   name: string
   summary: string
-  canonicalSource: 'docs/SDLC2/SDLC2.md'
+  canonicalSource: 'docs/04_SDLC2/SDLC2.md'
   publicationState: PublicationState
 }
 
@@ -56,6 +56,21 @@ const sprintTwoArticleOrder = [
   'solid-in-the-ai-era',
   'ai-assisted-legacy-fx-payment-system',
 ]
+const sprintTwoArticlePriority = new Map(
+  sprintTwoArticleOrder.map((articleId, index) => [articleId, index]),
+)
+
+export function compareReviewedArticlePriority(
+  left: Pick<ArticleRecord, 'id'>,
+  right: Pick<ArticleRecord, 'id'>,
+) {
+  const leftPriority = sprintTwoArticlePriority.get(left.id)
+  const rightPriority = sprintTwoArticlePriority.get(right.id)
+  if (leftPriority !== undefined && rightPriority !== undefined) return leftPriority - rightPriority
+  if (leftPriority !== undefined) return -1
+  if (rightPriority !== undefined) return 1
+  return left.id.localeCompare(right.id)
+}
 
 export const articles: readonly ArticleRecord[] = approvedArticleSnapshot.articles
   .map((article) => ({
@@ -69,7 +84,7 @@ export const articles: readonly ArticleRecord[] = approvedArticleSnapshot.articl
     source: 'MEDIUM_ELUSTONDO_AI_LIST' as const,
     publicationState: 'PUBLIC' as const,
   }))
-  .sort((left, right) => sprintTwoArticleOrder.indexOf(left.id) - sprintTwoArticleOrder.indexOf(right.id))
+  .sort(compareReviewedArticlePriority)
 
 export function isProjectPublishable(project: ProjectRecord) {
   if (project.disclosure === 'PRIVATE') return false
@@ -96,7 +111,7 @@ export const methods: readonly MethodRecord[] = [
     id: 'sdlc2',
     name: 'SDLC²',
     summary: 'A knowledge-centred, specification-driven, evidence-driven twelve-step methodology for AI-assisted software engineering, with pervasive AI assistance and continuing human responsibility for intent, judgment, authorization, accountability, and interpretation of evidence.',
-    canonicalSource: 'docs/SDLC2/SDLC2.md',
+    canonicalSource: 'docs/04_SDLC2/SDLC2.md',
     publicationState: 'PUBLIC',
   },
 ]

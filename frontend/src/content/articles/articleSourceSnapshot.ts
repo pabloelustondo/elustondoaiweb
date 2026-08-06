@@ -26,6 +26,7 @@ export type SnapshotIssueCode =
   | 'MALFORMED_RECORD'
   | 'MALFORMED_URL'
   | 'MALFORMED_PUBLICATION_TIME'
+  | 'UNAPPROVED_AUTHOR'
   | 'OUTSIDE_APPROVED_COLLECTION'
 
 export interface SnapshotIssue {
@@ -68,6 +69,20 @@ const requiredFields: readonly (keyof RawArticleSourceRecord)[] = [
   'sourceCollection',
 ]
 
+function normalizeRecord(record: RawArticleSourceRecord): RawArticleSourceRecord {
+  const trimCanonicalString = (value: string) => (
+    typeof value === 'string' ? value.trim() : value
+  )
+  return {
+    sourceId: trimCanonicalString(record.sourceId),
+    canonicalTitle: trimCanonicalString(record.canonicalTitle),
+    canonicalUrl: trimCanonicalString(record.canonicalUrl),
+    author: trimCanonicalString(record.author),
+    publishedAt: trimCanonicalString(record.publishedAt),
+    sourceCollection: trimCanonicalString(record.sourceCollection),
+  }
+}
+
 function validateRecord(record: RawArticleSourceRecord): SnapshotIssue[] {
   const issues: SnapshotIssue[] = []
   if (requiredFields.some((field) => typeof record[field] !== 'string' || record[field].trim() === '')) {
@@ -87,6 +102,9 @@ function validateRecord(record: RawArticleSourceRecord): SnapshotIssue[] {
   if (Number.isNaN(Date.parse(record.publishedAt))) {
     issues.push({ code: 'MALFORMED_PUBLICATION_TIME', sourceId: record.sourceId, detail: 'Publication time is not an ISO-compatible date.' })
   }
+  if (record.author !== 'Pablo Elustondo') {
+    issues.push({ code: 'UNAPPROVED_AUTHOR', sourceId: record.sourceId, detail: 'Only Pablo Elustondo is approved as the article author.' })
+  }
   if (record.sourceCollection !== APPROVED_MEDIUM_LIST_URL) {
     issues.push({ code: 'OUTSIDE_APPROVED_COLLECTION', sourceId: record.sourceId, detail: 'Record is outside the approved Elustondo.ai Medium list.' })
   }
@@ -104,10 +122,11 @@ export function normalizeArticleSource(
   previousSnapshot: ArticleSourceSnapshot,
   refreshedAt: string,
 ): ArticleRefreshResult {
-  const issues = records.flatMap(validateRecord)
+  const normalizedRecords = records.map(normalizeRecord)
+  const issues = normalizedRecords.flatMap(validateRecord)
   const seenIds = new Set<string>()
   const seenUrls = new Set<string>()
-  for (const record of records) {
+  for (const record of normalizedRecords) {
     if (seenIds.has(record.sourceId)) {
       issues.push({ code: 'DUPLICATE_SOURCE_ID', sourceId: record.sourceId, detail: 'Source identifier occurs more than once.' })
     }
@@ -120,7 +139,7 @@ export function normalizeArticleSource(
 
   if (issues.length > 0) return { ok: false, snapshot: previousSnapshot, issues }
 
-  const articles = records
+  const articles = normalizedRecords
     .map((record): NormalizedArticleRecord => ({
       sourceId: record.sourceId.trim(),
       canonicalTitle: record.canonicalTitle.trim(),

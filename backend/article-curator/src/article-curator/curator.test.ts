@@ -19,18 +19,24 @@ import { mediumListWithoutThreeAmigos } from '../local-fixtures.js'
 
 class MemoryStore implements CuratorStore {
   state = cloneBootstrapCuratorState()
-  runs: CuratorRunSummary[] = []
+  audits: CuratorRunSummary[] = []
+  failStateSave = false
+  failRequiredRunRecord = false
+  failAudit = false
 
   async loadState(): Promise<CuratorState> {
     return structuredClone(this.state)
   }
 
-  async saveState(state: CuratorState): Promise<void> {
-    this.state = structuredClone(state)
+  async commitState(state: CuratorState, requiredRun: CuratorRunSummary): Promise<void> {
+    if (this.failStateSave) throw new Error('Simulated state-save failure.')
+    if (this.failRequiredRunRecord) throw new Error('Simulated required run-record failure.')
+    this.state = structuredClone({ ...state, lastRun: requiredRun })
   }
 
-  async appendRunLog(run: CuratorRunSummary): Promise<void> {
-    this.runs.push(structuredClone(run))
+  async appendAuditLog(run: CuratorRunSummary): Promise<void> {
+    if (this.failAudit) throw new Error('Simulated optional audit failure.')
+    this.audits.push(structuredClone(run))
   }
 }
 
@@ -89,8 +95,8 @@ describe('ArticleCurator', () => {
     )
 
     const result = await curator.run()
-    expect(result.addedArticleIds).toEqual(['specification-driven-ai-assisted-engineering-in-sdlc2'])
-    expect(result.classifiedArticleIds).toEqual(['specification-driven-ai-assisted-engineering-in-sdlc2'])
+    expect(result.addedArticleIds).toEqual(['specification-driven-ai-assisted-engineering-in-sdlc2-aabbccddeeff'])
+    expect(result.classifiedArticleIds).toEqual(['specification-driven-ai-assisted-engineering-in-sdlc2-aabbccddeeff'])
     const article = store.state.articles.find((candidate) => candidate.mediumPostId === 'aabbccddeeff')
     expect(article?.classification.pillars).toEqual(['SDLC²'])
     expect(article?.classification.origin).toBe('LANGCHAIN_GEMINI')
@@ -128,6 +134,90 @@ describe('ArticleCurator', () => {
 
     await expect(curator.run()).rejects.toThrow('Simulated Medium source failure')
     expect(store.state).toEqual(before)
-    expect(store.runs.at(-1)?.status).toBe('FAILED')
+    expect(store.audits.at(-1)?.status).toBe('FAILED')
+  })
+
+  it('derives distinct stable identities for different posts with the same slug', async () => {
+    const store = new MemoryStore()
+    const source = new FixtureMediumCatalogSource([
+      ...asDiscovered(store.state),
+      {
+        canonicalTitle: 'Shared slug one',
+        canonicalUrl: 'https://medium.com/@pabloelustondo/shared-slug-aabbccddeeff',
+        author: 'Pablo Elustondo',
+        publishedAt: '2026-08-03',
+      },
+      {
+        canonicalTitle: 'Shared slug two',
+        canonicalUrl: 'https://medium.com/@pabloelustondo/shared-slug-112233445566',
+        author: 'Pablo Elustondo',
+        publishedAt: '2026-08-04',
+      },
+    ])
+    const curator = new ArticleCurator(source, new DeterministicFixtureClassifier(), store, quietLogger)
+
+    await curator.run()
+    expect(store.state.articles.filter((article) => article.sourceId.startsWith('shared-slug-')).map((article) => article.sourceId)).toEqual([
+      'shared-slug-112233445566',
+      'shared-slug-aabbccddeeff',
+    ])
+  })
+
+  it('rejects a normalized source identifier collision before classification or persistence', async () => {
+    const store = new MemoryStore()
+    const existing = store.state.articles.at(0)
+    if (!existing) throw new Error('Expected bootstrap article fixture.')
+    existing.sourceId = 'shared-slug-aabbccddeeff'
+    const before = structuredClone(store.state)
+    const source = new FixtureMediumCatalogSource([
+      ...asDiscovered(store.state),
+      {
+        canonicalTitle: 'Shared slug collision',
+        canonicalUrl: 'https://medium.com/@pabloelustondo/shared-slug-aabbccddeeff',
+        author: 'Pablo Elustondo',
+        publishedAt: '2026-08-04',
+      },
+    ])
+    const curator = new ArticleCurator(source, new DeterministicFixtureClassifier(), store, quietLogger)
+
+    await expect(curator.run()).rejects.toThrow('Duplicate normalized source identifier')
+    expect(store.state).toEqual(before)
+  })
+
+  it.each([
+    ['state save', 'failStateSave'],
+    ['required run record', 'failRequiredRunRecord'],
+  ] as const)('preserves the prior state when the required %s commit fails', async (_label, failure) => {
+    const store = new MemoryStore()
+    store[failure] = true
+    const before = structuredClone(store.state)
+    const curator = new ArticleCurator(
+      new FixtureMediumCatalogSource(mediumListWithoutThreeAmigos),
+      new DeterministicFixtureClassifier(),
+      store,
+      quietLogger,
+    )
+
+    await expect(curator.run()).rejects.toThrow('Simulated')
+    expect(store.state).toEqual(before)
+    expect(store.audits.at(-1)?.status).toBe('FAILED')
+  })
+
+  it('treats the secondary audit sink as best-effort after the required commit succeeds', async () => {
+    const store = new MemoryStore()
+    store.failAudit = true
+    const warnings: string[] = []
+    const curator = new ArticleCurator(
+      new FixtureMediumCatalogSource(mediumListWithoutThreeAmigos),
+      new DeterministicFixtureClassifier(),
+      store,
+      { ...quietLogger, warn: (message) => warnings.push(message) },
+    )
+
+    const result = await curator.run()
+    expect(result.status).toBe('UPDATED')
+    expect(store.state.lastRun).toEqual(result)
+    expect(store.state.pendingRemoval?.articleIds).toEqual(['three-amigos-agent-architecture'])
+    expect(warnings).toEqual(['Article curator audit log could not be appended.'])
   })
 })

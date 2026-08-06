@@ -12,8 +12,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "lint": "eslint .",
-    "local:once": "tsx src/local-runner.ts --once",
-    "local:twice": "tsx src/local-runner.ts --twice",
+    "local:once": "node --import tsx src/local-runner.ts --once",
+    "local:twice": "node --import tsx src/local-runner.ts --twice",
     "test": "vitest run --config vitest.config.ts",
     "typecheck": "tsc --noEmit --pretty false -p tsconfig.json"
   },

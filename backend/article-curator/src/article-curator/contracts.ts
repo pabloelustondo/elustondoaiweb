@@ -82,8 +82,8 @@ export interface ArticleClassifier {
 
 export interface CuratorStore {
   loadState(): Promise<CuratorState>
-  saveState(state: CuratorState): Promise<void>
-  appendRunLog(run: CuratorRunSummary): Promise<void>
+  commitState(state: CuratorState, requiredRun: CuratorRunSummary): Promise<void>
+  appendAuditLog(run: CuratorRunSummary): Promise<void>
 }
 
 export interface CuratorLogger {

@@ -12,4 +12,4 @@ This package is the visitor-facing Elustondo.ai website. It owns the stable bran
 
 The frontend does not own scheduled ingestion, Gemini calls, Firebase Storage persistence, deployment authority, or production credentials. It currently renders a reviewed bundled article snapshot; it does not read Medium or the curator during a visitor request.
 
-From the repository root, use `pnpm frontend:dev`, `pnpm frontend:typecheck`, `pnpm frontend:lint`, `pnpm frontend:test`, `pnpm frontend:build`, or `pnpm frontend:preview`. Full instructions are in the [Developer Guide](../docs/DeveloperGuide/README.md).
+From the repository root, use `pnpm frontend:dev`, `pnpm frontend:typecheck`, `pnpm frontend:lint`, `pnpm frontend:test`, `pnpm frontend:build`, or `pnpm frontend:preview`. Full instructions are in the [Developer Guide](../docs/02_DeveloperGuide/README_ai.md).

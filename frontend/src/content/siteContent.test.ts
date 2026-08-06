@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   articles,
+  compareReviewedArticlePriority,
   isProjectPublishable,
   methods,
   people,
@@ -17,6 +18,22 @@ describe('approved static content boundary', () => {
       'three-amigos-agent-architecture',
       'domain-analysis-responsibility-driven-design',
       'practical-local-ai-2026-part-one',
+    ])
+  })
+
+  it('places unknown article identifiers after the reviewed Home order', () => {
+    const ordered = [
+      { id: 'newly-approved-article' },
+      { id: 'practical-local-ai-2026-part-one' },
+      { id: 'three-amigos-agent-architecture' },
+      { id: 'another-new-article' },
+    ].sort(compareReviewedArticlePriority)
+
+    expect(ordered.map((article) => article.id)).toEqual([
+      'three-amigos-agent-architecture',
+      'practical-local-ai-2026-part-one',
+      'another-new-article',
+      'newly-approved-article',
     ])
   })
 
@@ -41,7 +58,7 @@ describe('approved static content boundary', () => {
 
   it('contains SDLC² as the only approved method', () => {
     expect(methods.map((method) => method.name)).toEqual(['SDLC²'])
-    expect(methods[0].canonicalSource).toBe('docs/SDLC2/SDLC2.md')
+    expect(methods[0].canonicalSource).toBe('docs/04_SDLC2/SDLC2.md')
   })
 
   it('contains exactly the four approved people and LinkedIn destinations', () => {

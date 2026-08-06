@@ -1,17 +1,17 @@
 # Elustondo.ai Documentation
 
-The documentation is organized by responsibility:
+Read breadth-first:
 
-> **SDLC2 explains how the system changes.**
->
-> **DeveloperGuide explains how to work with the current system.**
->
-> **Architecture explains what the architecture is and why.**
+1. [System Definition](01_SystemDefinition/README_ai.md) — what Elustondo.ai is, why it exists, who interacts with it, what it does now, and where its boundaries are.
+2. [Developer Guide](02_DeveloperGuide/README_ai.md) — how to understand, run, test, maintain, and safely change the implementation.
+3. [Architecture](03_Architecture/README_ai.md) — how the current system is technically shaped and why.
+4. [SDLC2](04_SDLC2/README_ai.md) — how changes are proposed, authorized, implemented, verified, reviewed, observed, and learned from.
 
-## Areas
+## Ownership rule
 
-- [`SDLC2/`](SDLC2/) — the canonical methodology, twelve numbered concerns, specifications, sprint packages, corrections, evidence, release decisions, and learning history.
-- [`DeveloperGuide/`](DeveloperGuide/) — current repository orientation, local workflow, commands, configuration, safe execution, and deployment boundaries.
-- [`Architecture/`](Architecture/) — maintained current-system boundaries, flows, decisions, constraints, and links to detailed architectural records.
+- Stable purpose, actors, capabilities, journeys, rules, and boundaries belong in System Definition.
+- Current commands, setup, safe workflows, and troubleshooting belong in Developer Guide.
+- Accepted current responsibilities, flows, decisions, constraints, failure behavior, and trade-offs belong in Architecture.
+- Proposals, sprint authority, implementation claims, tests, review, operational evidence, and learning remain in SDLC2.
 
-Sprint-specific proposals and evidence stay in SDLC2. Current operating instructions belong in DeveloperGuide. The maintained description of the implemented system belongs in Architecture.
+Historical files and filenames remain preserved beneath the numbered areas. The four `README_ai.md` files are the canonical entry points created by Correction 002.

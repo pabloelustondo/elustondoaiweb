@@ -64,6 +64,48 @@ describe('ArticleSourceSnapshot', () => {
     ]))
   })
 
+  it('rejects whitespace-equivalent identities and URLs after normalization', () => {
+    const first = currentRecords()[0]
+    const result = normalizeArticleSource([
+      first,
+      {
+        ...first,
+        sourceId: ` ${first.sourceId} `,
+        canonicalUrl: ` ${first.canonicalUrl} `,
+      },
+    ], previous, '2026-08-03T12:00:00.000Z')
+
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.snapshot).toBe(previous)
+    expect(result.issues.map((issue) => issue.code)).toEqual(expect.arrayContaining([
+      'DUPLICATE_SOURCE_ID',
+      'DUPLICATE_CANONICAL_URL',
+    ]))
+  })
+
+  it('rejects an unapproved author and preserves the last good snapshot', () => {
+    const result = normalizeArticleSource([
+      { ...currentRecords()[0], author: 'Someone Else' },
+    ], previous, '2026-08-03T12:00:00.000Z')
+
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.snapshot).toBe(previous)
+    expect(result.issues.map((issue) => issue.code)).toContain('UNAPPROVED_AUTHOR')
+  })
+
+  it('reports an adversarial non-string field without throwing or replacing the snapshot', () => {
+    const result = normalizeArticleSource([
+      { ...currentRecords()[0], canonicalTitle: 42 } as unknown as RawArticleSourceRecord,
+    ], previous, '2026-08-03T12:00:00.000Z')
+
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.snapshot).toBe(previous)
+    expect(result.issues.map((issue) => issue.code)).toContain('MALFORMED_RECORD')
+  })
+
   it('reports added, missing, changed, and stale-title metadata without publishing it automatically', () => {
     const records: RawArticleSourceRecord[] = [
       { ...currentRecords()[0], canonicalTitle: 'Article one — corrected title' },

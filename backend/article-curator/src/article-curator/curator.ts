@@ -23,7 +23,9 @@ interface NormalizedDiscoveredArticle extends DiscoveredMediumArticle {
 function sourceIdFromUrl(url: string): string {
   const pathname = new URL(url).pathname
   const lastSegment = pathname.split('/').filter(Boolean).at(-1) ?? ''
-  return lastSegment.replace(/-[0-9a-f]{12}$/i, '') || `medium-${mediumPostIdFromUrl(url)}`
+  const mediumPostId = mediumPostIdFromUrl(url)
+  const slug = lastSegment.replace(/-[0-9a-f]{12}$/i, '').trim().toLowerCase()
+  return slug ? `${slug}-${mediumPostId}` : `medium-${mediumPostId}`
 }
 
 function normalizeDiscovered(
@@ -31,17 +33,21 @@ function normalizeDiscovered(
   previous: CuratorState,
 ): NormalizedDiscoveredArticle[] {
   const previousByPostId = new Map(previous.articles.map((article) => [article.mediumPostId, article]))
-  const seen = new Set<string>()
+  const seenPostIds = new Set<string>()
+  const seenSourceIds = new Set<string>()
 
   return discovered.map((article) => {
     const canonicalUrl = normalizeMediumUrl(article.canonicalUrl)
     const mediumPostId = mediumPostIdFromUrl(canonicalUrl)
-    if (seen.has(mediumPostId)) throw new Error(`Duplicate Medium post ${mediumPostId}.`)
-    seen.add(mediumPostId)
+    if (seenPostIds.has(mediumPostId)) throw new Error(`Duplicate Medium post ${mediumPostId}.`)
+    seenPostIds.add(mediumPostId)
     const prior = previousByPostId.get(mediumPostId)
+    const sourceId = (prior?.sourceId ?? sourceIdFromUrl(canonicalUrl)).trim()
+    if (seenSourceIds.has(sourceId)) throw new Error(`Duplicate normalized source identifier ${sourceId}.`)
+    seenSourceIds.add(sourceId)
 
     return {
-      sourceId: prior?.sourceId ?? sourceIdFromUrl(canonicalUrl),
+      sourceId,
       mediumPostId,
       canonicalTitle: article.canonicalTitle.trim(),
       canonicalUrl,
@@ -113,6 +119,18 @@ export class ArticleCurator {
     private readonly removalConfirmationCount = 2,
     private readonly clock: () => Date = () => new Date(),
   ) {}
+
+  private async appendAuditBestEffort(run: CuratorRunSummary): Promise<void> {
+    try {
+      await this.store.appendAuditLog(run)
+    } catch (error) {
+      this.logger.warn('Article curator audit log could not be appended.', {
+        runId: run.runId,
+        errorName: error instanceof Error ? error.name : 'UnknownError',
+        message: error instanceof Error ? error.message : 'Unknown audit-log failure.',
+      })
+    }
+  }
 
   async run(): Promise<CuratorRunSummary> {
     const runId = randomUUID()
@@ -207,8 +225,8 @@ export class ArticleCurator {
         lastRun: run,
       }
 
-      await this.store.saveState(nextState)
-      await this.store.appendRunLog(run)
+      await this.store.commitState(nextState, run)
+      await this.appendAuditBestEffort(run)
       this.logger.info('Article curator completed.', {
         runId,
         status: run.status,
@@ -233,7 +251,7 @@ export class ArticleCurator {
         classifiedArticleIds: [],
         message: error instanceof Error ? error.message : 'Unknown curator failure.',
       }
-      await this.store.appendRunLog(run)
+      await this.appendAuditBestEffort(run)
       this.logger.error('Article curator failed; last-known-good state was preserved.', {
         runId,
         errorName: error instanceof Error ? error.name : 'UnknownError',
