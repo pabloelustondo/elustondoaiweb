@@ -11,13 +11,13 @@ import {
 
 describe('approved static content boundary', () => {
   it('contains exactly the approved Medium-list snapshot', () => {
-    expect(articles).toHaveLength(5)
+    expect(articles).toHaveLength(4)
     expect(articles.every((article) => article.source === 'MEDIUM_ELUSTONDO_AI_LIST')).toBe(true)
     expect(articles.every((article) => article.url.startsWith('https://medium.com/@pabloelustondo/'))).toBe(true)
     expect(articles.slice(0, 3).map((article) => article.id)).toEqual([
-      'three-amigos-agent-architecture',
       'domain-analysis-responsibility-driven-design',
       'practical-local-ai-2026-part-one',
+      'solid-in-the-ai-era',
     ])
   })
 
@@ -25,13 +25,15 @@ describe('approved static content boundary', () => {
     const ordered = [
       { id: 'newly-approved-article' },
       { id: 'practical-local-ai-2026-part-one' },
-      { id: 'three-amigos-agent-architecture' },
+      { id: 'domain-analysis-responsibility-driven-design' },
+      { id: 'solid-in-the-ai-era' },
       { id: 'another-new-article' },
     ].sort(compareReviewedArticlePriority)
 
     expect(ordered.map((article) => article.id)).toEqual([
-      'three-amigos-agent-architecture',
+      'domain-analysis-responsibility-driven-design',
       'practical-local-ai-2026-part-one',
+      'solid-in-the-ai-era',
       'another-new-article',
       'newly-approved-article',
     ])

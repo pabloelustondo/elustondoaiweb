@@ -52,11 +52,6 @@ export const editorialTaxonomy: readonly ArticleEditorialOverride[] = [
     pillars: ['Modernization'], subjects: ['legacy modernization', 'financial systems'], canonicalFor: [], featuredFor: [], editorialPriority: 0,
     provenance: 'EDITORIAL_OVERRIDE', rationale: 'Pablo approved the legacy FX payment-system article for Modernization.', humanReviewState: 'APPROVED', reviewedAt,
   },
-  {
-    articleId: 'three-amigos-agent-architecture',
-    pillars: [], subjects: [], canonicalFor: [], featuredFor: [], editorialPriority: 0,
-    provenance: 'EDITORIAL_OVERRIDE', rationale: 'Pablo has not yet assigned this article to an approved pillar.', humanReviewState: 'APPROVED', reviewedAt,
-  },
 ]
 
 export function applyArticleTaxonomy(

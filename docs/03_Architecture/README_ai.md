@@ -71,7 +71,7 @@ Its key architectural properties are:
 - **Deterministic article presentation.** The current article snapshot is grouped into `SDLC²`, `Architecture`, and `Modernization`; recent ordering and relevance signals are explainable rather than hidden in a runtime model score.
 - **Responsive editorial presentation.** Layout adapts across content-driven widths, including the 320 CSS-pixel acceptance boundary.
 
-The bundled article snapshot currently contains five records, including “The Three Amigos Agent Architecture.” That fact is separate from the backend's four-article local regression fixture.
+The bundled article snapshot currently contains four reviewed records. “The Three Amigos Agent Architecture” was removed from the publication snapshot after Pablo removed it from Medium. This reviewed frontend change is separate from the backend's four-article local regression fixture.
 
 ## Medium Article Curator architecture
 
@@ -282,7 +282,7 @@ This is a configured topology. Live provider calls, remote state, scheduled exec
 | Same Gemini model for discovery and classification | Simple production composition | Couples two failure, quota, and model-quality concerns. |
 | Root and backend lockfiles | Reproducible workspace and deployable package | Dependency maintenance is duplicated deliberately. |
 
-The current five-record frontend snapshot and four-record local curator scenario illustrate the unimplemented publication integration. They must not be described as one synchronized state.
+The current frontend snapshot and local curator fixture both contain four records, but they reached that membership through separate reviewed and deterministic-fixture paths. They are still not synchronized states, and matching counts do not implement the deferred publication integration.
 
 ## Current architecture versus future proposals
 

@@ -50,7 +50,6 @@ const publicationDate = new Intl.DateTimeFormat('en-US', {
   year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
 })
 const sprintTwoArticleOrder = [
-  'three-amigos-agent-architecture',
   'domain-analysis-responsibility-driven-design',
   'practical-local-ai-2026-part-one',
   'solid-in-the-ai-era',

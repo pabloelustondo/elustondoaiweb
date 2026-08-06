@@ -18,19 +18,23 @@ describe('ArticleTaxonomy', () => {
     expect(classified.find((article) => article.sourceId === 'ai-assisted-legacy-fx-payment-system')?.pillars).toEqual(['Modernization'])
   })
 
-  it('keeps Three Amigos explicitly unclassified instead of guessing', () => {
-    const classified = applyArticleTaxonomy(approvedArticleSnapshot, editorialTaxonomy)
-    const article = classified.find((item) => item.sourceId === 'three-amigos-agent-architecture')
+  it('keeps a record without an editorial assignment explicitly unclassified instead of guessing', () => {
+    const articleWithoutAssignment = approvedArticleSnapshot.articles[0]
+    const classified = applyArticleTaxonomy({
+      ...approvedArticleSnapshot,
+      articles: [articleWithoutAssignment],
+    }, [])
+    const article = classified[0]
 
     expect(article?.pillars).toEqual([])
     expect(article?.classificationState).toBe('UNCLASSIFIED')
-    expect(article?.provenance).toBe('EDITORIAL_OVERRIDE')
-    expect(article?.rationale).toMatch(/not yet assigned/i)
+    expect(article?.provenance).toBe('NO_EDITORIAL_ASSIGNMENT')
+    expect(article?.rationale).toMatch(/no approved editorial assignment/i)
   })
 
   it('supports multiple pillars and keeps editorial overrides separate from refreshed source metadata', () => {
     const override: ArticleEditorialOverride = {
-      articleId: 'three-amigos-agent-architecture',
+      articleId: 'domain-analysis-responsibility-driven-design',
       pillars: ['SDLC²', 'Architecture'],
       subjects: ['multi-agent systems'],
       canonicalFor: [],
