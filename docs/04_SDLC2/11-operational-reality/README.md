@@ -5,3 +5,4 @@ This folder holds evidence from the environment where real users, data, constrai
 ## Current artifacts
 
 - [Firebase Conversational POC Operations](firebase-conversational-poc-operations.md)
+- [Firebase Production Deployment Runbook](../09-build-and-test/firebase-production-deployment-runbook.md) — the verified sequence that was actually executed, including every blocker encountered and its fix.

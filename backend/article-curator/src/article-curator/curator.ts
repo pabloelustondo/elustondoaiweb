@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import {
-  APPROVED_MEDIUM_LIST_URL,
+  APPROVED_MEDIUM_PROFILE_FEED_URL,
   type ArticleClassification,
   type ArticleClassifier,
   type ClassificationInput,
@@ -13,7 +13,7 @@ import {
   type MediumCatalogSource,
   type PendingRemovalObservation,
 } from './contracts.js'
-import { mediumPostIdFromUrl, normalizeMediumUrl } from './medium-source.js'
+import { hasRequiredPublishTag, mediumPostIdFromUrl, normalizeMediumUrl } from './medium-source.js'
 
 interface NormalizedDiscoveredArticle extends DiscoveredMediumArticle {
   sourceId: string
@@ -53,6 +53,7 @@ function normalizeDiscovered(
       canonicalUrl,
       author: article.author.trim(),
       publishedAt: new Date(article.publishedAt).toISOString(),
+      tags: article.tags,
       ...(article.excerpt?.trim() ? { excerpt: article.excerpt.trim() } : {}),
     }
   })
@@ -67,6 +68,7 @@ function sourceMetadataChanged(
     || previous.author !== current.author
     || previous.publishedAt !== current.publishedAt
     || previous.excerpt !== current.excerpt
+    || JSON.stringify(previous.tags) !== JSON.stringify(current.tags)
 }
 
 function sameIds(left: readonly string[], right: readonly string[]): boolean {
@@ -139,14 +141,22 @@ export class ArticleCurator {
 
     try {
       const previous = await this.store.loadState()
-      const discovered = normalizeDiscovered(await this.source.read(), previous)
-      discoveredCount = discovered.length
+      const feedArticles = normalizeDiscovered(await this.source.read(), previous)
+      discoveredCount = feedArticles.length
+      // Publish gate: only feed stories carrying the required tag are eligible.
+      const discovered = feedArticles.filter((article) => hasRequiredPublishTag(article.tags))
+      const feedVisibleIds = new Set(feedArticles.map((article) => article.sourceId))
       const discoveredIds = new Set(discovered.map((article) => article.sourceId))
       const previousById = new Map(previous.articles.map((article) => [article.sourceId, article]))
+      // The feed is truncated to recent stories: only feed-visible untagged
+      // articles are removal candidates; out-of-feed articles are retained as-is.
       const absentArticleIds = previous.articles
-        .filter((article) => !discoveredIds.has(article.sourceId))
+        .filter((article) => feedVisibleIds.has(article.sourceId) && !discoveredIds.has(article.sourceId))
         .map((article) => article.sourceId)
         .sort()
+      const retainedOutOfFeed = previous.articles.filter(
+        (article) => !feedVisibleIds.has(article.sourceId),
+      )
       const pendingRemoval = removalObservation(absentArticleIds, previous.pendingRemoval, startedAt)
       const removalsConfirmed = Boolean(
         pendingRemoval && pendingRemoval.confirmations >= this.removalConfirmationCount,
@@ -179,11 +189,12 @@ export class ArticleCurator {
 
         return {
           ...article,
-          sourceCollection: APPROVED_MEDIUM_LIST_URL,
+          sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
           classification: classification as ArticleClassification,
         }
       })
 
+      nextArticles.push(...retainedOutOfFeed)
       if (pendingRemoval && !removalsConfirmed) {
         for (const articleId of pendingRemoval.articleIds) {
           const prior = previousById.get(articleId)
@@ -209,16 +220,16 @@ export class ArticleCurator {
         pendingRemovalArticleIds: removalsConfirmed ? [] : pendingRemoval?.articleIds ?? [],
         classifiedArticleIds: classificationResults.map((result) => result.sourceId),
         message: removalsConfirmed
-          ? 'Validated catalog saved after confirming the same removal set twice.'
+          ? 'Validated catalog saved after confirming the same untagged set twice.'
           : pendingRemoval
-            ? 'Catalog saved with removals pending a second consecutive observation.'
+            ? 'Catalog saved with untag removals pending a second consecutive observation.'
             : stateChanged
               ? 'Validated catalog saved.'
               : 'Validated catalog is unchanged.',
       }
       const nextState: CuratorState = {
         schemaVersion: 1,
-        sourceCollection: APPROVED_MEDIUM_LIST_URL,
+        sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
         refreshedAt: completedAt,
         articles: nextArticles,
         ...(!removalsConfirmed && pendingRemoval ? { pendingRemoval } : {}),

@@ -264,6 +264,8 @@ They are not normal development commands. Before any deployment, require all of 
 
 Deployment does not by itself authorize production promotion, public DNS changes, mail-record changes, live model usage, or editorial publication.
 
+See the [Firebase Production Deployment Runbook](../04_SDLC2/09-build-and-test/firebase-production-deployment-runbook.md) for the verified, reproducible sequence of commands, one-time project provisioning steps, and the exact blockers encountered when this was last executed end to end.
+
 ## Normal change workflow
 
 1. Read [System Definition](../01_SystemDefinition/README_ai.md) for current purpose and boundaries.

@@ -1,26 +1,11 @@
-import { JsonOutputParser } from '@langchain/core/output_parsers'
-import { ChatPromptTemplate } from '@langchain/core/prompts'
-import { ChatGoogle } from '@langchain/google/node'
 import { XMLParser } from 'fast-xml-parser'
 import { z } from 'zod'
 import {
-  APPROVED_MEDIUM_LIST_URL,
   APPROVED_MEDIUM_PROFILE_FEED_URL,
+  REQUIRED_PUBLISH_TAG,
   type DiscoveredMediumArticle,
   type MediumCatalogSource,
 } from './contracts.js'
-
-const listDiscoverySchema = z.object({
-  status: z.enum(['ok', 'unavailable']),
-  reason: z.string().max(500).optional(),
-  articles: z.array(z.object({
-    canonicalTitle: z.string().min(1).max(500),
-    canonicalUrl: z.url(),
-    author: z.string().min(1).max(200),
-    publishedAt: z.string().min(1).max(100),
-    excerpt: z.string().max(1000).optional(),
-  })).max(100),
-})
 
 const rssItemSchema = z.record(z.string(), z.unknown())
 const rssSchema = z.object({
@@ -58,6 +43,29 @@ function stripHtml(value: string): string {
     .trim()
 }
 
+// Medium exposes tags as feed categories; slugs and display names must compare equal.
+export function normalizeTagSlug(value: string): string {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+export function hasRequiredPublishTag(tags: readonly string[]): boolean {
+  const required = normalizeTagSlug(REQUIRED_PUBLISH_TAG)
+  return tags.some((tag) => normalizeTagSlug(tag) === required)
+}
+
+function normalizeTags(tags: readonly unknown[]): string[] {
+  const seen = new Set<string>()
+  const normalized: string[] = []
+  for (const tag of tags) {
+    const text = textValue(tag)
+    const slug = normalizeTagSlug(text)
+    if (!slug || seen.has(slug)) continue
+    seen.add(slug)
+    normalized.push(text)
+  }
+  return normalized
+}
+
 export function normalizeMediumUrl(value: string): string {
   const url = new URL(value)
   const isMediumHost = url.hostname === 'medium.com' || url.hostname.endsWith('.medium.com')
@@ -81,7 +89,7 @@ export function mediumPostIdFromUrl(value: string): string {
 
 function validateDiscoveredArticles(articles: readonly DiscoveredMediumArticle[]): DiscoveredMediumArticle[] {
   if (articles.length === 0) {
-    throw new MediumSourceUnavailableError('The approved Medium list returned no articles; the last-known-good catalog is preserved.')
+    throw new MediumSourceUnavailableError('The Medium profile feed returned no articles; the last-known-good catalog is preserved.')
   }
 
   const seenPostIds = new Set<string>()
@@ -89,7 +97,7 @@ function validateDiscoveredArticles(articles: readonly DiscoveredMediumArticle[]
     const canonicalUrl = normalizeMediumUrl(article.canonicalUrl)
     const postId = mediumPostIdFromUrl(canonicalUrl)
     if (seenPostIds.has(postId)) {
-      throw new MediumSourceUnavailableError(`The approved Medium list returned duplicate post ${postId}.`)
+      throw new MediumSourceUnavailableError(`The Medium profile feed returned duplicate post ${postId}.`)
     }
     seenPostIds.add(postId)
 
@@ -105,51 +113,13 @@ function validateDiscoveredArticles(articles: readonly DiscoveredMediumArticle[]
       canonicalUrl,
       author: article.author.trim(),
       publishedAt: new Date(article.publishedAt).toISOString(),
+      tags: normalizeTags(article.tags),
       ...(article.excerpt?.trim() ? { excerpt: stripHtml(article.excerpt).slice(0, 1000) } : {}),
     }
   })
 }
 
-export class LangChainMediumListMembershipSource implements MediumCatalogSource {
-  constructor(
-    private readonly model: ChatGoogle,
-    private readonly listUrl = APPROVED_MEDIUM_LIST_URL,
-  ) {}
-
-  async read(): Promise<DiscoveredMediumArticle[]> {
-    const prompt = ChatPromptTemplate.fromMessages([
-      [
-        'system',
-        [
-          'You are the source-discovery step of the Elustondo.ai article curator.',
-          'Use URL context to open exactly the supplied public Medium List.',
-          'Return only articles that are visibly members of that List at this moment.',
-          'Do not use memory, search results, recommendations, the author profile, or related stories as list membership evidence.',
-          'Copy each title, canonical Medium URL, author, publication time, and visible subtitle or excerpt exactly when available.',
-          'If the List cannot be read with confidence, return status unavailable and an empty articles array.',
-          'Return JSON only with keys status, reason, and articles.',
-        ].join(' '),
-      ],
-      ['human', 'Approved Medium List: {listUrl}'],
-    ])
-
-    const urlContextModel = this.model.bindTools([{ urlContext: {} }])
-    const promptValue = await prompt.invoke({ listUrl: this.listUrl })
-    const response = await urlContextModel.invoke(promptValue.toChatMessages())
-    const parser = new JsonOutputParser<Record<string, unknown>>()
-    const candidate = listDiscoverySchema.parse(await parser.invoke(response))
-
-    if (candidate.status !== 'ok') {
-      throw new MediumSourceUnavailableError(
-        candidate.reason || 'Gemini URL context could not read the approved Medium list.',
-      )
-    }
-
-    return validateDiscoveredArticles(candidate.articles)
-  }
-}
-
-export class MediumProfileRssReader {
+export class MediumProfileRssReader implements MediumCatalogSource {
   constructor(
     private readonly feedUrl = APPROVED_MEDIUM_PROFILE_FEED_URL,
     private readonly fetcher: typeof fetch = fetch,
@@ -177,34 +147,11 @@ export class MediumProfileRssReader {
       canonicalUrl: textValue(item.link),
       author: textValue(item['dc:creator']),
       publishedAt: textValue(item.pubDate),
+      tags: normalizeTags(Array.isArray(item.category) ? item.category : item.category !== undefined ? [item.category] : []),
       excerpt: stripHtml(textValue(item['content:encoded'])).slice(0, 1000),
     }))
 
     return validateDiscoveredArticles(articles)
-  }
-}
-
-export class RssValidatedMediumCatalogSource implements MediumCatalogSource {
-  constructor(
-    private readonly membershipSource: MediumCatalogSource,
-    private readonly rssReader: MediumProfileRssReader,
-  ) {}
-
-  async read(): Promise<DiscoveredMediumArticle[]> {
-    const [members, profileArticles] = await Promise.all([
-      this.membershipSource.read(),
-      this.rssReader.read(),
-    ])
-    const profileByPostId = new Map(
-      profileArticles.map((article) => [mediumPostIdFromUrl(article.canonicalUrl), article]),
-    )
-
-    return validateDiscoveredArticles(members.map((member) => {
-      const profileArticle = profileByPostId.get(mediumPostIdFromUrl(member.canonicalUrl))
-      return profileArticle
-        ? { ...member, ...profileArticle, canonicalUrl: member.canonicalUrl }
-        : member
-    }))
   }
 }
 

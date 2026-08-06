@@ -2,6 +2,6 @@
 
 This folder contains controlled repository-level maintenance tools that coordinate more than one package or write review artifacts outside a component.
 
-`refresh-articles.mjs` reads versioned frontend fixtures, validates a candidate article snapshot, and writes a reviewable candidate and diff to Sprint 003 evidence. It does not promote the candidate, call Medium, mutate remote state, or deploy anything.
+Article refresh is no longer a manual script: the scheduled curator in [`backend/article-curator/`](../backend/article-curator/) reads the Medium profile feed, applies the "AI Philosophy" tag gate, and publishes the catalog the site fetches from `/api/articles`.
 
 Component-specific runtime code belongs under `frontend/` or `backend/`, not here.

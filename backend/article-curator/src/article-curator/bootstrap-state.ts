@@ -1,11 +1,15 @@
 import {
-  APPROVED_MEDIUM_LIST_URL,
+  APPROVED_MEDIUM_PROFILE_FEED_URL,
+  REQUIRED_PUBLISH_TAG,
   type ArticleClassification,
   type CuratedArticle,
   type CuratorState,
 } from './contracts.js'
 
 const reviewedAt = '2026-08-03T00:00:00.000Z'
+
+// Bootstrap tags record editorial approval; live feed observations supersede them.
+const approvedTags = [REQUIRED_PUBLISH_TAG]
 
 function approvedClassification(
   pillars: ArticleClassification['pillars'],
@@ -31,7 +35,8 @@ const articles: CuratedArticle[] = [
     canonicalUrl: 'https://medium.com/@pabloelustondo/an-ai-assisted-strategy-for-a-legacy-fx-payment-system-a-rotman-capstone-project-74d10ab995f6',
     author: 'Pablo Elustondo',
     publishedAt: '2026-08-01',
-    sourceCollection: APPROVED_MEDIUM_LIST_URL,
+    tags: [...approvedTags],
+    sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
     classification: approvedClassification(
       ['Modernization'],
       ['legacy modernization', 'financial systems'],
@@ -45,7 +50,8 @@ const articles: CuratedArticle[] = [
     canonicalUrl: 'https://medium.com/@pabloelustondo/domain-analysis-wirfs-brocks-responsibility-driven-design-for-agentic-ai-d0cbb412315c',
     author: 'Pablo Elustondo',
     publishedAt: '2026-07-15',
-    sourceCollection: APPROVED_MEDIUM_LIST_URL,
+    tags: [...approvedTags],
+    sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
     classification: approvedClassification(
       ['SDLC²'],
       ['responsibility-driven design', 'agentic systems'],
@@ -59,7 +65,8 @@ const articles: CuratedArticle[] = [
     canonicalUrl: 'https://medium.com/@pabloelustondo/the-rise-of-practical-local-ai-in-2026-part-i-models-runtimes-and-the-capability-cascade-ca7e94cdb449',
     author: 'Pablo Elustondo',
     publishedAt: '2026-07-24',
-    sourceCollection: APPROVED_MEDIUM_LIST_URL,
+    tags: [...approvedTags],
+    sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
     classification: approvedClassification(
       ['Architecture'],
       ['local LLMs', 'AI runtimes'],
@@ -73,7 +80,8 @@ const articles: CuratedArticle[] = [
     canonicalUrl: 'https://medium.com/@pabloelustondo/solid-2-0-rethinking-architecture-best-practice-for-the-agentic-era-31f8d7aa9beb',
     author: 'Pablo Elustondo',
     publishedAt: '2026-07-05',
-    sourceCollection: APPROVED_MEDIUM_LIST_URL,
+    tags: [...approvedTags],
+    sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
     classification: approvedClassification(
       ['SDLC²'],
       ['SOLID', 'agentic systems'],
@@ -87,7 +95,8 @@ const articles: CuratedArticle[] = [
     canonicalUrl: 'https://medium.com/@pabloelustondo/the-three-amigos-agent-architecture-9b65d9344cf9',
     author: 'Pablo Elustondo',
     publishedAt: '2026-06-25',
-    sourceCollection: APPROVED_MEDIUM_LIST_URL,
+    tags: [...approvedTags],
+    sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
     classification: approvedClassification(
       [],
       [],
@@ -98,7 +107,7 @@ const articles: CuratedArticle[] = [
 
 export const bootstrapCuratorState: CuratorState = {
   schemaVersion: 1,
-  sourceCollection: APPROVED_MEDIUM_LIST_URL,
+  sourceCollection: APPROVED_MEDIUM_PROFILE_FEED_URL,
   refreshedAt: reviewedAt,
   articles,
 }

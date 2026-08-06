@@ -18,6 +18,7 @@
     "typecheck": "tsc --noEmit --pretty false -p tsconfig.json"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^5.0.5",
     "@langchain/core": "1.2.4",
     "@langchain/google": "0.2.1",
     "fast-xml-parser": "5.10.1",

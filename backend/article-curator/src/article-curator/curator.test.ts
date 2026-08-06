@@ -15,7 +15,7 @@ import type {
   CuratorStore,
   DiscoveredMediumArticle,
 } from './contracts.js'
-import { mediumListWithoutThreeAmigos } from '../local-fixtures.js'
+import { mediumFeedWithUntaggedThreeAmigos } from '../local-fixtures.js'
 
 class MemoryStore implements CuratorStore {
   state = cloneBootstrapCuratorState()
@@ -52,15 +52,16 @@ function asDiscovered(state: CuratorState): DiscoveredMediumArticle[] {
     canonicalUrl: article.canonicalUrl,
     author: article.author,
     publishedAt: article.publishedAt,
+    tags: [...article.tags],
     ...(article.excerpt ? { excerpt: article.excerpt } : {}),
   }))
 }
 
 describe('ArticleCurator', () => {
-  it('requires two consecutive observations before applying a removal', async () => {
+  it('requires two consecutive observations before removing a feed-visible untagged article', async () => {
     const store = new MemoryStore()
     const curator = new ArticleCurator(
-      new FixtureMediumCatalogSource(mediumListWithoutThreeAmigos),
+      new FixtureMediumCatalogSource(mediumFeedWithUntaggedThreeAmigos),
       new DeterministicFixtureClassifier(),
       store,
       quietLogger,
@@ -76,6 +77,41 @@ describe('ArticleCurator', () => {
     expect(store.state.articles.map((article) => article.sourceId)).not.toContain('three-amigos-agent-architecture')
   })
 
+  it('retains published articles that age out of the truncated feed', async () => {
+    const store = new MemoryStore()
+    // Feed shows only the newest story; every other published article is out of feed.
+    const curator = new ArticleCurator(
+      new FixtureMediumCatalogSource([mediumFeedWithUntaggedThreeAmigos[0]!]),
+      new DeterministicFixtureClassifier(),
+      store,
+      quietLogger,
+    )
+
+    const result = await curator.run()
+    expect(result.pendingRemovalArticleIds).toEqual([])
+    expect(result.removedArticleIds).toEqual([])
+    expect(store.state.articles).toHaveLength(5)
+  })
+
+  it('never publishes a feed story that lacks the required tag', async () => {
+    const store = new MemoryStore()
+    const source = new FixtureMediumCatalogSource([
+      ...asDiscovered(store.state),
+      {
+        canonicalTitle: 'Untagged newcomer',
+        canonicalUrl: 'https://medium.com/@pabloelustondo/untagged-newcomer-aabbccddeeff',
+        author: 'Pablo Elustondo',
+        publishedAt: '2026-08-05',
+        tags: ['Agents'],
+      },
+    ])
+    const curator = new ArticleCurator(source, new DeterministicFixtureClassifier(), store, quietLogger)
+
+    const result = await curator.run()
+    expect(result.addedArticleIds).toEqual([])
+    expect(store.state.articles.map((article) => article.sourceId)).not.toContain('untagged-newcomer-aabbccddeeff')
+  })
+
   it('adds and classifies a newly discovered article using only approved pillars', async () => {
     const store = new MemoryStore()
     const source = new FixtureMediumCatalogSource([
@@ -85,6 +121,7 @@ describe('ArticleCurator', () => {
         canonicalUrl: 'https://medium.com/@pabloelustondo/specification-driven-ai-assisted-engineering-in-sdlc2-aabbccddeeff',
         author: 'Pablo Elustondo',
         publishedAt: '2026-08-03',
+        tags: ['AI Philosophy'],
       },
     ])
     const curator = new ArticleCurator(
@@ -146,12 +183,14 @@ describe('ArticleCurator', () => {
         canonicalUrl: 'https://medium.com/@pabloelustondo/shared-slug-aabbccddeeff',
         author: 'Pablo Elustondo',
         publishedAt: '2026-08-03',
+        tags: ['AI Philosophy'],
       },
       {
         canonicalTitle: 'Shared slug two',
         canonicalUrl: 'https://medium.com/@pabloelustondo/shared-slug-112233445566',
         author: 'Pablo Elustondo',
         publishedAt: '2026-08-04',
+        tags: ['AI Philosophy'],
       },
     ])
     const curator = new ArticleCurator(source, new DeterministicFixtureClassifier(), store, quietLogger)
@@ -176,6 +215,7 @@ describe('ArticleCurator', () => {
         canonicalUrl: 'https://medium.com/@pabloelustondo/shared-slug-aabbccddeeff',
         author: 'Pablo Elustondo',
         publishedAt: '2026-08-04',
+        tags: ['AI Philosophy'],
       },
     ])
     const curator = new ArticleCurator(source, new DeterministicFixtureClassifier(), store, quietLogger)
@@ -192,7 +232,7 @@ describe('ArticleCurator', () => {
     store[failure] = true
     const before = structuredClone(store.state)
     const curator = new ArticleCurator(
-      new FixtureMediumCatalogSource(mediumListWithoutThreeAmigos),
+      new FixtureMediumCatalogSource(mediumFeedWithUntaggedThreeAmigos),
       new DeterministicFixtureClassifier(),
       store,
       quietLogger,
@@ -208,7 +248,7 @@ describe('ArticleCurator', () => {
     store.failAudit = true
     const warnings: string[] = []
     const curator = new ArticleCurator(
-      new FixtureMediumCatalogSource(mediumListWithoutThreeAmigos),
+      new FixtureMediumCatalogSource(mediumFeedWithUntaggedThreeAmigos),
       new DeterministicFixtureClassifier(),
       store,
       { ...quietLogger, warn: (message) => warnings.push(message) },

@@ -23,9 +23,9 @@ export interface ClassifiedArticle extends NormalizedArticleRecord {
   featuredFor: ArticlePillar[]
   editorialPriority: number
   classificationState: 'CLASSIFIED' | 'UNCLASSIFIED'
-  provenance: 'EDITORIAL_OVERRIDE' | 'NO_EDITORIAL_ASSIGNMENT'
+  provenance: 'EDITORIAL_OVERRIDE' | 'NO_EDITORIAL_ASSIGNMENT' | 'AI_CLASSIFICATION'
   rationale: string
-  humanReviewState: 'APPROVED' | 'NEEDS_REVIEW'
+  humanReviewState: 'APPROVED' | 'NEEDS_REVIEW' | 'AI_CURATED'
   reviewedAt?: string
 }
 

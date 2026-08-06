@@ -72,6 +72,7 @@ Firebase Hosting preview URLs are shareable and public to anyone who knows the U
 
 ## References
 
+- [Firebase Production Deployment Runbook](../09-build-and-test/firebase-production-deployment-runbook.md) — verified, reproducible execution of these gates against the live project
 - [Firebase pricing plans](https://firebase.google.com/docs/projects/billing/firebase-pricing-plans)
 - [Cloud Functions for Firebase — get started](https://firebase.google.com/docs/functions/get-started)
 - [Cloud Functions environment and secret configuration](https://firebase.google.com/docs/functions/config-env)

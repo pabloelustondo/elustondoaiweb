@@ -1,8 +1,8 @@
-export const APPROVED_MEDIUM_LIST_URL =
-  'https://medium.com/@pabloelustondo/list/elustondoai-dd60f27687ee' as const
-
 export const APPROVED_MEDIUM_PROFILE_FEED_URL =
   'https://medium.com/feed/@pabloelustondo' as const
+
+// Sole publish gate: a story is public if and only if it carries this Medium tag.
+export const REQUIRED_PUBLISH_TAG = 'AI Philosophy' as const
 
 export const APPROVED_PILLARS = ['SDLC²', 'Architecture', 'Modernization'] as const
 
@@ -13,6 +13,7 @@ export interface DiscoveredMediumArticle {
   canonicalUrl: string
   author: string
   publishedAt: string
+  tags: string[]
   excerpt?: string
 }
 
@@ -29,7 +30,7 @@ export interface ArticleClassification {
 export interface CuratedArticle extends DiscoveredMediumArticle {
   sourceId: string
   mediumPostId: string
-  sourceCollection: typeof APPROVED_MEDIUM_LIST_URL
+  sourceCollection: typeof APPROVED_MEDIUM_PROFILE_FEED_URL
   classification: ArticleClassification
 }
 
@@ -55,7 +56,7 @@ export interface CuratorRunSummary {
 
 export interface CuratorState {
   schemaVersion: 1
-  sourceCollection: typeof APPROVED_MEDIUM_LIST_URL
+  sourceCollection: typeof APPROVED_MEDIUM_PROFILE_FEED_URL
   refreshedAt: string
   articles: CuratedArticle[]
   pendingRemoval?: PendingRemovalObservation

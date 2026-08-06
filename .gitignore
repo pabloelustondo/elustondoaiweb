@@ -4,3 +4,5 @@ coverage/
 *.log
 !docs/**/evidence/**/*.log
 .DS_Store
+.firebase/
+.pnpm-store/

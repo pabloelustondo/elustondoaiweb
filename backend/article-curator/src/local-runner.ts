@@ -6,7 +6,7 @@ import { ArticleCurator } from './article-curator/curator.js'
 import { DeterministicFixtureClassifier } from './article-curator/langchain-classifier.js'
 import { FixtureMediumCatalogSource } from './article-curator/medium-source.js'
 import { ConsoleCuratorLogger, LocalFileCuratorStore } from './article-curator/store.js'
-import { mediumListWithoutThreeAmigos } from './local-fixtures.js'
+import { mediumFeedWithUntaggedThreeAmigos } from './local-fixtures.js'
 
 const functionsRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const runCount = process.argv.includes('--twice') ? 2 : 1
@@ -22,7 +22,7 @@ const store = new LocalFileCuratorStore(
   resolve(localDirectory, 'article-curator-runs.jsonl'),
 )
 const curator = new ArticleCurator(
-  new FixtureMediumCatalogSource(mediumListWithoutThreeAmigos),
+  new FixtureMediumCatalogSource(mediumFeedWithUntaggedThreeAmigos),
   new DeterministicFixtureClassifier(),
   store,
   new ConsoleCuratorLogger(),

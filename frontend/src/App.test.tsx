@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App, ArticlesExperience } from './App'
+import { resetArticleLibraryCache } from './content/articles/articleCatalogClient'
 
 function renderAt(path: string) {
   window.history.replaceState(null, '', path)
@@ -10,8 +11,15 @@ function renderAt(path: string) {
 }
 
 describe('StableShell routes', () => {
-  beforeEach(() => window.history.replaceState(null, '', '/'))
-  afterEach(() => window.history.replaceState(null, '', '/'))
+  beforeEach(() => {
+    window.history.replaceState(null, '', '/')
+    resetArticleLibraryCache()
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('offline'))
+  })
+  afterEach(() => {
+    window.history.replaceState(null, '', '/')
+    vi.restoreAllMocks()
+  })
 
   it.each([
     ['/', 'Spec-driven AI-assisted software engineering, solution architecture, agentic systems, and modernization.'],
@@ -99,15 +107,41 @@ describe('StableShell routes', () => {
     expect(screen.getByRole('heading', { name: 'Useful writing without an assigned pillar' })).toBeInTheDocument()
   })
 
-  it('shows canonical titles and Medium destinations without a visitor-time request', () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+  it('requests the runtime catalog and falls back to the reviewed snapshot when it fails', async () => {
     renderAt('/articles')
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/articles', expect.anything())
+
+    expect(await screen.findByText(/last known good local snapshot/i)).toBeInTheDocument()
     const canonicalLinks = screen.getAllByRole('link', { name: 'Read on Medium' })
     expect(screen.getAllByText('Domain Analysis & Wirfs-Brock’s Responsibility-Driven Design for Agentic AI').length).toBeGreaterThan(0)
     expect(screen.queryByText('The Three Amigos Agent Architecture')).not.toBeInTheDocument()
     expect(canonicalLinks.every((link) => link.getAttribute('href')?.startsWith('https://medium.com/@pabloelustondo/'))).toBe(true)
-    expect(fetchSpy).not.toHaveBeenCalled()
-    fetchSpy.mockRestore()
+  })
+
+  it('renders newly curated articles from a successful catalog fetch', async () => {
+    vi.mocked(globalThis.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        version: 1,
+        refreshedAt: '2026-08-06T12:00:00.000Z',
+        articles: [{
+          sourceId: 'a-new-ai-philosophy-article-aabbccddeeff',
+          title: 'A New AI Philosophy Article',
+          url: 'https://medium.com/@pabloelustondo/a-new-ai-philosophy-article-aabbccddeeff',
+          author: 'Pablo Elustondo',
+          publishedAt: '2026-08-05T00:00:00.000Z',
+          tags: ['AI Philosophy'],
+          excerpt: 'A fresh article discovered from the Medium feed.',
+          pillars: ['SDLC²'],
+          subjects: ['ai philosophy'],
+          classificationState: 'CLASSIFIED',
+        }],
+      }),
+    } as Response)
+
+    renderAt('/articles')
+    expect((await screen.findAllByText('A New AI Philosophy Article')).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/last known good local snapshot/i)).not.toBeInTheDocument()
   })
 
   it('presents empty, partial, and refresh-failure states clearly', () => {

@@ -1,4 +1,5 @@
 export const APPROVED_MEDIUM_LIST_URL = 'https://medium.com/@pabloelustondo/list/elustondoai-dd60f27687ee' as const
+export const APPROVED_MEDIUM_FEED_URL = 'https://medium.com/feed/@pabloelustondo' as const
 
 export interface RawArticleSourceRecord {
   sourceId: string
@@ -10,7 +11,7 @@ export interface RawArticleSourceRecord {
 }
 
 export interface NormalizedArticleRecord extends RawArticleSourceRecord {
-  sourceCollection: typeof APPROVED_MEDIUM_LIST_URL
+  sourceCollection: typeof APPROVED_MEDIUM_LIST_URL | typeof APPROVED_MEDIUM_FEED_URL
 }
 
 export interface ArticleSourceSnapshot {

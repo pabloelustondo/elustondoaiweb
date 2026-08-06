@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import { articles, company, methods, people, projects } from './content/siteContent'
 import { approvedArticleSnapshot } from './content/articles/approvedArticleSnapshot'
+import { fetchArticleLibrary, type ArticleLibrary } from './content/articles/articleCatalogClient'
 import { APPROVED_PILLARS, applyArticleTaxonomy, editorialTaxonomy, type ArticlePillar, type ClassifiedArticle } from './content/articles/articleTaxonomy'
 import { rankLatest, rankPillarArticles } from './content/articles/articleRanker'
 
@@ -121,10 +122,33 @@ const pillarDefinitions: Record<ArticlePillar, string> = {
 }
 
 const classifiedArticles = applyArticleTaxonomy(approvedArticleSnapshot, editorialTaxonomy)
-const publicArticleById = new Map(articles.map((article) => [article.id, article]))
 
-function DiscoveryArticle({ article, reasons }: { article: ClassifiedArticle; reasons: readonly string[] }) {
-  const publicArticle = publicArticleById.get(article.sourceId)
+// Reviewed bundled snapshot: shown immediately and kept when the catalog fetch fails.
+const fallbackLibrary: ArticleLibrary = {
+  refreshedAt: approvedArticleSnapshot.refreshedAt,
+  articles,
+  classified: classifiedArticles,
+}
+
+function useArticleLibrary(): { library: ArticleLibrary; status: ArticleLibraryStatus } {
+  const [state, setState] = useState<{ library: ArticleLibrary; status: ArticleLibraryStatus }>({
+    library: fallbackLibrary,
+    status: 'READY',
+  })
+
+  useEffect(() => {
+    let active = true
+    fetchArticleLibrary().then((library) => {
+      if (!active) return
+      setState(library ? { library, status: 'READY' } : { library: fallbackLibrary, status: 'REFRESH_FAILURE' })
+    })
+    return () => { active = false }
+  }, [])
+
+  return state
+}
+
+function DiscoveryArticle({ reasons, publicArticle }: { reasons: readonly string[]; publicArticle: (typeof articles)[number] | undefined }) {
   if (!publicArticle) return null
   return <article className="discovery-card">
     <p className="card-label">{publicArticle.author} · {publicArticle.publishedLabel}</p>
@@ -137,7 +161,8 @@ function DiscoveryArticle({ article, reasons }: { article: ClassifiedArticle; re
 
 export type ArticleLibraryStatus = 'READY' | 'PARTIAL' | 'REFRESH_FAILURE'
 
-export function ArticlesExperience({ records = classifiedArticles, status = 'READY' }: { records?: readonly ClassifiedArticle[]; status?: ArticleLibraryStatus }) {
+export function ArticlesExperience({ records = classifiedArticles, status = 'READY', publicArticles = articles }: { records?: readonly ClassifiedArticle[]; status?: ArticleLibraryStatus; publicArticles?: readonly (typeof articles)[number][] }) {
+  const publicArticleById = new Map(publicArticles.map((article) => [article.id, article]))
   const latest = rankLatest(records)
   const unclassified = records.filter((article) => article.classificationState === 'UNCLASSIFIED')
 
@@ -160,7 +185,7 @@ export function ArticlesExperience({ records = classifiedArticles, status = 'REA
             <h3 id={`pillar-${pillar}`}>{pillar}</h3>
             <p>{pillarDefinitions[pillar]}</p>
             <div className="pillar-articles">{ranked.length > 0
-              ? ranked.map(({ article, reasons }) => <DiscoveryArticle key={article.sourceId} article={article} reasons={reasons} />)
+              ? ranked.map(({ article, reasons }) => <DiscoveryArticle key={article.sourceId} reasons={reasons} publicArticle={publicArticleById.get(article.sourceId)} />)
               : <p className="empty-state">No approved articles are classified here yet.</p>}</div>
           </section>
         })}
@@ -185,6 +210,7 @@ export function ArticlesExperience({ records = classifiedArticles, status = 'REA
 }
 
 export function HomePage() {
+  const { library } = useArticleLibrary()
   return <main id="main-content" tabIndex={-1}>
     <section className="hero shell" aria-labelledby="page-title">
       <p className="eyebrow">{company.legalName}</p>
@@ -194,7 +220,7 @@ export function HomePage() {
     </section>
     <div className="shell content-grid"><div>
       <Section id="writing" eyebrow="Selected writing" title="Ideas developed through practice">
-        <div className="cards">{articles.slice(0, 3).map((article) => <article key={article.id}><p className="card-label">{article.publishedLabel}</p><h3>{article.title}</h3>{article.summary && <p>{article.summary}</p>}<ExternalLink href={article.url}>Read on Medium</ExternalLink></article>)}</div>
+        <div className="cards">{library.articles.slice(0, 3).map((article) => <article key={article.id}><p className="card-label">{article.publishedLabel}</p><h3>{article.title}</h3>{article.summary && <p>{article.summary}</p>}<ExternalLink href={article.url}>Read on Medium</ExternalLink></article>)}</div>
         <p className="section-link"><InternalLink href="/articles">View all articles</InternalLink></p>
       </Section>
       <Section id="work" eyebrow="Current work" title="Building and learning in public">
@@ -215,7 +241,8 @@ export function HomePage() {
 }
 
 function ArticlesPage() {
-  return <Page eyebrow="Knowledge" title="Articles" intro="Explore approved writing by editorial pillar and relevance, or follow the separate newest-first stream."><ArticlesExperience /></Page>
+  const { library, status } = useArticleLibrary()
+  return <Page eyebrow="Knowledge" title="Articles" intro="Explore approved writing by editorial pillar and relevance, or follow the separate newest-first stream."><ArticlesExperience records={library.classified} status={status} publicArticles={library.articles} /></Page>
 }
 
 function ProjectsPage() {

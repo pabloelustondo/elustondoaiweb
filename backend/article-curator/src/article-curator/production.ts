@@ -1,11 +1,7 @@
 import { ChatGoogle } from '@langchain/google/node'
 import { ArticleCurator } from './curator.js'
 import { LangChainArticleClassifier } from './langchain-classifier.js'
-import {
-  LangChainMediumListMembershipSource,
-  MediumProfileRssReader,
-  RssValidatedMediumCatalogSource,
-} from './medium-source.js'
+import { MediumProfileRssReader } from './medium-source.js'
 import {
   ConsoleCuratorLogger,
   FirebaseStorageCuratorStore,
@@ -18,14 +14,9 @@ export function createProductionArticleCurator(logger: CuratorLogger = new Conso
     platformType: 'gcp',
     maxRetries: 2,
   })
-  const membershipSource = new LangChainMediumListMembershipSource(model)
-  const source = new RssValidatedMediumCatalogSource(
-    membershipSource,
-    new MediumProfileRssReader(),
-  )
 
   return new ArticleCurator(
-    source,
+    new MediumProfileRssReader(),
     new LangChainArticleClassifier(model),
     new FirebaseStorageCuratorStore(),
     logger,

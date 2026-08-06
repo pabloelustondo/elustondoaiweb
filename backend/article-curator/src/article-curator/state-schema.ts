@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import {
-  APPROVED_MEDIUM_LIST_URL,
+  APPROVED_MEDIUM_PROFILE_FEED_URL,
   APPROVED_PILLARS,
   type CuratorState,
 } from './contracts.js'
@@ -63,11 +63,15 @@ const articleSchema = z.strictObject({
   }),
   author: z.literal('Pablo Elustondo'),
   publishedAt: timestamp,
+  tags: z.array(z.string().min(1).max(100).refine(
+    (value) => value === value.trim(),
+    'Tags must already be normalized.',
+  )).max(25),
   excerpt: z.string().max(1000).refine(
     (value) => value === value.trim(),
     'Excerpts must already be normalized.',
   ).optional(),
-  sourceCollection: z.literal(APPROVED_MEDIUM_LIST_URL),
+  sourceCollection: z.literal(APPROVED_MEDIUM_PROFILE_FEED_URL),
   classification: classificationSchema,
 }).superRefine((article, context) => {
   try {
@@ -94,7 +98,7 @@ const runSummarySchema = z.strictObject({
 
 const curatorStateSchema = z.strictObject({
   schemaVersion: z.literal(1),
-  sourceCollection: z.literal(APPROVED_MEDIUM_LIST_URL),
+  sourceCollection: z.literal(APPROVED_MEDIUM_PROFILE_FEED_URL),
   refreshedAt: timestamp,
   articles: z.array(articleSchema).min(1).max(200),
   pendingRemoval: z.strictObject({
