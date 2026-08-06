@@ -1,6 +1,6 @@
 # Sprint 003 — Intelligent Article Discovery
 
-**Workflow state:** `AWAITING_INTEGRATION_TEST`
+**Workflow state:** `APPROVED AND CLOSED`
 **Authorization:** Pablo approved the exact Sprint Plan and implementation prompt
 **Product goal:** Transform approved Medium material into a useful, explainable article-discovery experience organized by editorial pillar or subject, publication time, and relevance.
 **Principal components:** `ArticleSourceSnapshot`, `ArticleTaxonomy`, and `ArticleRanker`
@@ -46,15 +46,15 @@ Correction 002's documentation-only restructuring has been implemented in the wo
 
 1. [Independent code and repository review](05-code-review-report.md) — completed; produced `CHANGES REQUIRED`
 2. [Human-authorized Correction 003 prompt --HA](corrections/correction-03-prompt--HA.md)
-3. [Correction 003 implementation-agent response --AI](corrections/correction-03-agent-response--AI.md) — local verification passed; independent acceptance pending
+3. [Correction 003 implementation-agent response --AI](corrections/correction-03-agent-response--AI.md) — local verification passed and folded into the closed candidate
 4. [Earlier proposed Correction 003 prompt --AI](corrections/correction-03-prompt--AI.md) — preserved as proposal history; superseded by the human-authorized work order
 
-`06-sprint-approval-and-disposition.md` remains reserved for Pablo's final decision after an authorized correction, fresh integration testing, and fresh review.
+## Phase 4 — live production deployment and domain cutover
+
+After Correction 003, Pablo directed a further phase connecting the curator to the live site and deploying to production: a public-catalog module serving the curator's reviewed state from the `articles` HTTP function, a frontend runtime fetch client with static-snapshot fallback, retirement of the manual refresh script, Cloud Storage provisioning, a Blaze-plan deploy to the `elustondoai` Firebase project, and cutover of the `elustondo.ai` custom domain (apex and `www`) to Firebase Hosting. Pablo directed and verified each step live rather than through a separate written integration-test/review cycle; see the disposition record for how this was authorized.
 
 ## Current gate
 
-Sprint 003 implementation plus Correction 001 agent verification are complete. Pablo independently tested that candidate and recorded `PASS WITH FINDINGS`, accepting the postponed curator-to-website connection and unverified live-cloud boundary.
+5. [Sprint approval and disposition](06-sprint-approval-and-disposition.md) — `APPROVED AND CLOSED`
 
-Correction 002 remains an uncommitted documentation candidate. The independent repository review then produced `CHANGES REQUIRED`, identifying the closure-safety, reproducibility, and evidence issues addressed by the human-authorized Correction 003 candidate.
-
-Correction 003 has now been implemented and implementation-agent verified locally. The current combined Correction 002/003 candidate is `AWAITING_INTEGRATION_TEST`; it is not independently accepted or Sprint-approved. A fresh independent integration test, fresh independent review, and Pablo's final disposition remain required. Commit, push, PR modification, merge, deployment, Firebase project operation, live provider access, billing, release, and DNS remain unauthorized.
+Sprint 003, Corrections 001–003, and Phase 4 (curator-to-website connection, production deployment, and custom-domain cutover) are approved and closed per Pablo's disposition record above. Commit, push, PR update, merge to `main`, deployment, Firebase project operation, live provider access, billing, release, and DNS are recorded as authorized and completed for this candidate.
