@@ -9,6 +9,10 @@ This repository contains the visitor-facing Elustondo.ai application, the schedu
 - [ASDG on GitHub](https://github.com/Elustondo-ai/asdg) holds the methodology and its tooling. The [ASDG playlist](https://www.youtube.com/playlist?list=PLQ5UBReAns0Q) collects the selected videos.
 - The [ASDG video distribution notes](docs/04_SDLC2/01-context-and-domain-analysis/asdg-video-distribution--AI.md) document the Methods placement and publishing workflow.
 
+To review the Methods page locally, install the locked workspace dependencies from this non-Drive clone, run `pnpm frontend:dev`, and open `/methods` on the printed local URL. The player is absent until **Load video player** is activated; **Watch on YouTube** remains available beside that control. Loading the player does not start playback, and hiding it removes the frame and stops playback.
+
+Before publishing, run `pnpm frontend:typecheck`, `pnpm frontend:lint`, `pnpm frontend:test`, and `pnpm frontend:build`. Use `pnpm frontend:preview` to check the built `/methods` page on desktop and at 320-pixel mobile width, including Tab, Enter, Space, player controls, and the direct watch link. See the [local video review](docs/04_SDLC2/09-build-and-test/asdg-methods-video-review--AI.md) for results and verification limits. Local preview does not deploy the site.
+
 ## Repository map
 
 | Area | Responsibility |

@@ -260,15 +260,20 @@ function MethodsPage() {
           <p className="card-label">Video introduction · 2:12</p>
           <h2>{title}</h2>
           <p>{summary}</p>
-          <button
-            type="button"
-            className="button secondary video-toggle"
-            aria-controls="asdg-video"
-            aria-expanded={playerVisible}
-            onClick={() => setPlayerVisible(!playerVisible)}
-          >
-            {playerVisible ? 'Hide video player' : 'Load video player'}
-          </button>
+          <p id="asdg-video-note" className="video-note">The embedded player connects to YouTube when you load it. If it cannot play, use the direct YouTube link.</p>
+          <div className="actions video-actions">
+            <button
+              type="button"
+              className="button secondary video-toggle"
+              aria-controls="asdg-video"
+              aria-describedby="asdg-video-note"
+              aria-expanded={playerVisible}
+              onClick={() => setPlayerVisible(!playerVisible)}
+            >
+              {playerVisible ? 'Hide video player' : 'Load video player'}
+            </button>
+            <ExternalLink href={`https://www.youtube.com/watch?v=${videoId}`}>Watch on YouTube</ExternalLink>
+          </div>
           <div id="asdg-video" hidden={!playerVisible}>
             {playerVisible && (
               <iframe
@@ -282,7 +287,6 @@ function MethodsPage() {
             )}
           </div>
           <ul className="method-links">
-            <li><ExternalLink href={`https://www.youtube.com/watch?v=${videoId}`}>Watch on YouTube</ExternalLink></li>
             <li><ExternalLink href={playlistUrl}>Browse the ASDG playlist</ExternalLink></li>
             <li><ExternalLink href={repositoryUrl}>Explore ASDG on GitHub</ExternalLink></li>
           </ul>
