@@ -2,6 +2,13 @@
 
 This repository contains the visitor-facing Elustondo.ai application, the scheduled Article Curator backend, and the documentation used to understand, change, and operate them.
 
+## Website and ASDG
+
+- [Elustondo.ai](https://elustondo.ai/) is the public site for the practice, its writing, methods, and selected projects.
+- [Introducing ASDG](https://www.youtube.com/watch?v=yb4ggoYQrtw) is the 2:12 introduction to the Agentic Software Development Governance Project.
+- [ASDG on GitHub](https://github.com/Elustondo-ai/asdg) holds the methodology and its tooling. The [ASDG playlist](https://www.youtube.com/playlist?list=PLQ5UBReAns0Q) collects the selected videos.
+- The [ASDG video distribution notes](docs/04_SDLC2/01-context-and-domain-analysis/asdg-video-distribution--AI.md) document the Methods placement and publishing workflow.
+
 ## Repository map
 
 | Area | Responsibility |
