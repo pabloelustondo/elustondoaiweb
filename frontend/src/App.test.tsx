@@ -71,6 +71,28 @@ describe('StableShell routes', () => {
     expect(screen.getByRole('main')).toHaveFocus()
   })
 
+  it('loads the ASDG player on request and keeps the canonical YouTube link available', async () => {
+    const user = userEvent.setup()
+    const title = 'Introducing ASDG, the Agentic Software Development Governance Project'
+    renderAt('/methods')
+
+    expect(screen.getByRole('heading', { name: title })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Watch on YouTube' })).toHaveAttribute(
+      'href',
+      'https://www.youtube.com/watch?v=yb4ggoYQrtw',
+    )
+    expect(screen.queryByTitle(title)).not.toBeInTheDocument()
+
+    const playerButton = screen.getByRole('button', { name: 'Load video player' })
+    await user.click(playerButton)
+    expect(playerButton).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByTitle(title)).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/yb4ggoYQrtw')
+
+    await user.click(playerButton)
+    expect(playerButton).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByTitle(title)).not.toBeInTheDocument()
+  })
+
   it('opens and closes mobile navigation accessibly', async () => {
     const user = userEvent.setup()
     renderAt('/')
