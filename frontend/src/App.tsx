@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
-import { articles, company, methods, people, projects } from './content/siteContent'
+import { articles, asdgIntroduction, company, methods, people, projects } from './content/siteContent'
 import { approvedArticleSnapshot } from './content/articles/approvedArticleSnapshot'
 import { fetchArticleLibrary, type ArticleLibrary } from './content/articles/articleCatalogClient'
 import { APPROVED_PILLARS, applyArticleTaxonomy, editorialTaxonomy, type ArticlePillar, type ClassifiedArticle } from './content/articles/articleTaxonomy'
@@ -250,7 +250,58 @@ function ProjectsPage() {
 }
 
 function MethodsPage() {
-  return <Page eyebrow="How we work" title="Methods" intro="Engineering practices made explicit, testable, and useful to people and AI agents."><div className="content-list">{methods.map((method) => <article className="content-card method-card" key={method.id}><p className="card-label">Canonical method</p><h2>{method.name}</h2><p>{method.summary}</p><p className="source-note">The canonical specification is maintained with this website’s source and delivery documentation.</p></article>)}</div></Page>
+  const [playerVisible, setPlayerVisible] = useState(false)
+  const { title, summary, videoId, playlistUrl, repositoryUrl } = asdgIntroduction
+
+  return (
+    <Page eyebrow="How we work" title="Methods" intro="Engineering practices made explicit, testable, and useful to people and AI agents.">
+      <div className="content-list">
+        <article className="content-card method-card">
+          <p className="card-label">Video introduction · 2:12</p>
+          <h2>{title}</h2>
+          <p>{summary}</p>
+          <p id="asdg-video-note" className="video-note">The embedded player connects to YouTube when you load it. If it cannot play, use the direct YouTube link.</p>
+          <div className="actions video-actions">
+            <button
+              type="button"
+              className="button secondary video-toggle"
+              aria-controls="asdg-video"
+              aria-describedby="asdg-video-note"
+              aria-expanded={playerVisible}
+              onClick={() => setPlayerVisible(!playerVisible)}
+            >
+              {playerVisible ? 'Hide video player' : 'Load video player'}
+            </button>
+            <ExternalLink href={`https://www.youtube.com/watch?v=${videoId}`}>Watch on YouTube</ExternalLink>
+          </div>
+          <div id="asdg-video" hidden={!playerVisible}>
+            {playerVisible && (
+              <iframe
+                className="method-video"
+                title={title}
+                src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                referrerPolicy="strict-origin-when-cross-origin"
+                allow="encrypted-media; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+          </div>
+          <ul className="method-links">
+            <li><ExternalLink href={playlistUrl}>Browse the ASDG playlist</ExternalLink></li>
+            <li><ExternalLink href={repositoryUrl}>Explore ASDG on GitHub</ExternalLink></li>
+          </ul>
+        </article>
+        {methods.map((method) => (
+          <article className="content-card method-card" key={method.id}>
+            <p className="card-label">Canonical method</p>
+            <h2>{method.name}</h2>
+            <p>{method.summary}</p>
+            <p className="source-note">The canonical specification is maintained with this website’s source and delivery documentation.</p>
+          </article>
+        ))}
+      </div>
+    </Page>
+  )
 }
 
 function PeoplePage() {

@@ -115,6 +115,14 @@ export const methods: readonly MethodRecord[] = [
   },
 ]
 
+export const asdgIntroduction = {
+  title: 'Introducing ASDG, the Agentic Software Development Governance Project',
+  summary: 'Pablo Elustondo introduces the motivation and vision behind ASDG. It brings together agile delivery, living specifications, and teams of specialized AI agents that collaborate under human direction.',
+  videoId: 'yb4ggoYQrtw',
+  playlistUrl: 'https://www.youtube.com/playlist?list=PLQ5UBReAns0Q',
+  repositoryUrl: 'https://github.com/Elustondo-ai/asdg',
+} as const
+
 export const people: readonly PersonRecord[] = [
   {
     id: 'williams-martinez',

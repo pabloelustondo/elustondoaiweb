@@ -57,6 +57,12 @@ h3 { font-size:1.45rem; margin:.45rem 0 .65rem; }
 .content-card h2, .content-card h3, .person-card h2 { font-size:clamp(1.65rem, 3vw, 2.4rem); }
 .content-card p:not(.card-label), .source-note { max-width:72ch; color:var(--muted); }
 .method-card { border-top-color:var(--blue); }
+.video-toggle { color:var(--green); cursor:pointer; font-family:inherit; font-size:inherit; }
+.video-note { font-size:.92rem; }
+.video-actions { align-items:center; margin-top:1rem; }
+.video-actions > a { display:inline-flex; align-items:center; min-height:44px; }
+.method-video { display:block; width:100%; max-width:760px; min-height:200px; aspect-ratio:16 / 9; margin-top:1rem; border:0; }
+.method-links { display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; list-style:none; padding:0; margin:1rem 0 0; }
 .source-note { padding-top:1rem; border-top:1px solid var(--rule); font-size:.92rem; }
 .people-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:1.25rem; }
 .person-card { min-width:0; padding:2rem; background:var(--paper); border-top:3px solid var(--gold); }

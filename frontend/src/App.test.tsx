@@ -71,6 +71,59 @@ describe('StableShell routes', () => {
     expect(screen.getByRole('main')).toHaveFocus()
   })
 
+  it('loads the ASDG player on request and keeps the canonical YouTube link available', async () => {
+    const user = userEvent.setup()
+    const title = 'Introducing ASDG, the Agentic Software Development Governance Project'
+    renderAt('/methods')
+
+    expect(screen.getByRole('heading', { name: title })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Watch on YouTube' })).toHaveAttribute(
+      'href',
+      'https://www.youtube.com/watch?v=yb4ggoYQrtw',
+    )
+    expect(screen.queryByTitle(title)).not.toBeInTheDocument()
+
+    const playerButton = screen.getByRole('button', { name: 'Load video player' })
+    await user.click(playerButton)
+    expect(playerButton).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByTitle(title)).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/yb4ggoYQrtw')
+
+    await user.click(playerButton)
+    expect(playerButton).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByTitle(title)).not.toBeInTheDocument()
+  })
+
+  it.each(['{Enter}', ' '])('operates the ASDG player with the keyboard (%s) and keeps the fallback before the frame', async (key) => {
+    const user = userEvent.setup()
+    const { container } = renderAt('/methods')
+    const playerButton = screen.getByRole('button', { name: 'Load video player' })
+    const watchLink = screen.getByRole('link', { name: 'Watch on YouTube' })
+    expect(playerButton).toHaveAccessibleDescription(/connects to YouTube when you load it/)
+
+    // Reach the control through the page's actual tab order.
+    for (let step = 0; step < 15 && document.activeElement !== playerButton; step++) await user.tab()
+    expect(playerButton).toHaveFocus()
+    expect(container.querySelector('iframe')).toBeNull()
+    await user.keyboard(key)
+    const frame = screen.getByTitle('Introducing ASDG, the Agentic Software Development Governance Project')
+    expect(playerButton).toHaveAttribute('aria-expanded', 'true')
+    expect(playerButton).toHaveFocus()
+    expect(frame).toHaveAttribute('allowfullscreen')
+    expect(frame).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin')
+    expect(watchLink).toHaveAttribute('href', 'https://www.youtube.com/watch?v=yb4ggoYQrtw')
+    await user.tab()
+    expect(watchLink).toHaveFocus()
+    // Check our expanded shell; YouTube's cross-origin document is browser-tested separately.
+    expect((await axe(container, { iframes: false })).violations).toHaveLength(0)
+
+    await user.tab({ shift: true })
+    await user.keyboard(key)
+    expect(playerButton).toHaveFocus()
+    expect(playerButton).toHaveAttribute('aria-expanded', 'false')
+    expect(frame).not.toBeInTheDocument()
+    expect(watchLink).toBeVisible()
+  })
+
   it('opens and closes mobile navigation accessibly', async () => {
     const user = userEvent.setup()
     renderAt('/')
